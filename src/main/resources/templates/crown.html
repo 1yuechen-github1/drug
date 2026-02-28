@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>基本信息</title>
+  <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+  <style>
+    .align-input {
+      display: flex;
+      align-items: center;
+    }
+    .align-input .layui-form-label {
+      flex: 0 0 180px; /* 设置标签宽度 */
+      text-align: -moz-center; /* 将标签内容对齐 */
+    }
+    .align-input .layui-input-block {
+      flex: 1; /* 让输入框占据剩余的空间 */
+      margin-left: 0px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form layui-form-pane" action="">
+        <input name="id" id="id-input" class="layui-input layui-hide" th:value="${crown?.id}"/>
+        <input name="medicalrecordid" id="id-input2" class="layui-input layui-hide" th:value="${crown?.medicalrecordid}"/>
+
+        <!--        <div class="layui-form-item  align-input">-->
+<!--          <label class="layui-form-label">ID</label>-->
+<!--          <div class="layui-input-block">-->
+<!--            <input type="text" name="patientname" th:value="${patientBasicInf?.patientname}" lay-verify="required"  placeholder="请输入ID" autocomplete="off" class="layui-input">-->
+<!--          </div>-->
+<!--        </div>-->
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">就诊记录</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownRecord" th:value="${crown?.crownRecord}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" maxlength="18">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">基台编号</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownAbutmentNumber" th:value="${crown?.crownAbutmentNumber}" placeholder="" autocomplete="off" class="layui-input">
+<!--            <select name="crown_abutment_number" lay-verify="required">-->
+<!--              <option th:value="${crown?.crown_abutment_number}"></option>-->
+<!--              <option value="是" >是</option>-->
+<!--              <option value="否" >否</option>-->
+<!--            </select>-->
+          </div>
+        </div>
+
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">日期</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownDate" th:value="${crown?.crownDate}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">基台类型</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownAbutmentType" th:value="${crown?.crownAbutmentType}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">基台直径</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownAbutmentDiameter" th:value="${crown?.crownAbutmentDiameter}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">基台高度</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownAbutmentHeight" th:value="${crown?.crownAbutmentHeight}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">连接类型</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownAbutmentConnection" th:value="${crown?.crownAbutmentConnection}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">修复体类型</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownType" th:value="${crown?.crownType}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否被动就位</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="crown_passive_positioning" th:value="${crown?.crown_passive_positioning}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+            <select name="crownPassivePositioning" lay-verify="required">
+              <option th:value="${crown?.crownPassivePositioning}"></option>
+              <option value="是" th:selected="${crown?.crownPassivePositioning=='是'}">是</option>
+              <option value="否" th:selected="${crown?.crownPassivePositioning=='否'}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">调合</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownOcclusalAdjustment" th:value="${crown?.crownOcclusalAdjustment}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">戴牙后备注</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownRemarks" th:value="${crown?.crownRemarks}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模CBCT</label>
+          <div class="layui-input-block">
+            <!--            <input type="text" name="impression_cbct" th:value="${impression?.impression_cbct}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="crownCbct" lay-verify="required">
+              <option th:value="${crown?.crownCbct}"></option>
+              <option value="是" th:selected="${crown?.crownCbct=='是'}">是</option>
+              <option value="否" th:selected="${crown?.crownCbct=='否'}">否</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模小牙片</label>
+          <div class="layui-input-block">
+            <!--            <input type="text" name="impression_apical_xray" th:value="${impression?.impression_apical_xray}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="crownApicalXray" lay-verify="required">
+              <option th:value="${crown?.crownApicalXray}"></option>
+              <option value="是" th:selected="${crown?.crownApicalXray=='是'}">是</option>
+              <option value="否" th:selected="${crown?.crownApicalXray=='否'}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模全景片</label>
+          <div class="layui-input-block">
+            <!--            <input type="text" name="impression_panoramic_xray" th:value="${impression?.impression_panoramic_xray}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="crownPanoramicXray" lay-verify="required">
+              <option th:value="${crown?.crownPanoramicXray}"></option>
+              <option value="是" th:selected="${crown?.crownPanoramicXray=='是'}">是</option>
+              <option value="否" th:selected="${crown?.crownPanoramicXray=='否'}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">临床照片（多张）</label>
+          <div class="layui-input-block">
+            <input type="text" name="crownClinicalPhoto" th:value="${crown?.crownClinicalPhoto}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">病历</label>
+          <div class="layui-input-block">
+                        <input type="text" name="crownMedicalRecord" th:value="${crown?.crownMedicalRecord}" placeholder="" autocomplete="off" class="layui-input">
+<!--            <select name="crown_panoramic_xray" lay-verify="required">-->
+<!--              <option th:value="${crown?.crown_panoramic_xray}"></option>-->
+<!--              <option value="是" >是</option>-->
+<!--              <option value="否" >否</option>-->
+<!--            </select>-->
+          </div>
+        </div>
+
+
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      //format: 'yyyy-MM-DD',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+  });
+</script>
+
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      var formData = data.field;
+      $.ajax({
+        url: '/patientManagement/patientCrownEdit',
+        type: 'POST',
+        data: formData,
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        }
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>
+

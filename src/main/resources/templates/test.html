@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文件传输输入框</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/layui-dist/layui.js"></script>
+</head>
+<body>
+
+<div class="layui-form">
+  <label class="layui-form-label">需要传输文件吗？</label>
+  <div class="layui-input-block">
+    <input type="radio" name="transfer" value="yes" title="是">
+    <input type="radio" name="transfer" value="no" title="否" checked>
+  </div>
+</div>
+
+<div class="layui-form" id="fileInputContainer" style="display: none;">
+  <label class="layui-form-label">选择文件</label>
+  <div class="layui-input-inline">
+    <input type="file" class="layui-upload-file" id="fileInput">
+  </div>
+</div>
+
+<input type="text" class="layui-input" id="fileNameInput" readonly>
+<button class="layui-btn" id="downloadButton" style="display: none;">下载文件</button>
+
+<script>
+  layui.use(['form', 'upload', 'layer'], function () {
+    var form = layui.form;
+    var upload = layui.upload;
+    var layer = layui.layer;
+
+    form.on('radio', function (data) {
+      if (data.value === 'yes') {
+        $('#fileInputContainer').show();
+      } else {
+        $('#fileInputContainer').hide();
+      }
+    });
+
+    // 文件上传
+    upload.render({
+      elem: '#fileInput',
+      url: '/upload', // 替换成你的文件上传接口
+      done: function (res) {
+        if (res.code === 0) {
+          $('#fileNameInput').val(res.filename);
+          $('#downloadButton').show();
+          layer.msg('文件上传成功！');
+        } else {
+          layer.msg('文件上传失败，请重试。');
+        }
+      }
+    });
+
+    // 文件下载
+    $('#downloadButton').on('click', function () {
+      var fileName = $('#fileNameInput').val();
+      if (fileName) {
+        var link = document.createElement('a');
+        link.href = '/download?filename=' + fileName; // 替换成你的文件下载接口
+        link.download = fileName;
+        link.click();
+      } else {
+        layer.msg('没有可下载的文件。');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

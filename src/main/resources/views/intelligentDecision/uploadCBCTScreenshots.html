@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>上传CBCT截图</title>
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="id" th:value="${obj?.id}" class="layui-input layui-hide"/>
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            患者姓名
+                        </div>
+                        <input type="text" name="patientName" th:value="${obj?.patientName}" lay-verify="required" placeholder="请输入患者姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-card">
+                        <div class="layui-card-body" style="padding: 15px;">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn layui-btn-normal" id="ID-upload-demo-files" th:action="@{/file/upload}">选择文件</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                文件上传-->
+                <div class="layui-btn-container">
+                    <button type="button" class="layui-btn demo-class-accept" lay-options="{accept: 'file'}">
+                        <i class="layui-icon layui-icon-upload"></i>
+                        上传文件
+                    </button>
+<!--                    <button type="button" class="layui-btn demo-class-accept" lay-options="{accept: 'file'}">选择文件</button>-->
+<!--                    <button type="button" class="layui-btn layui-btn-normal" id="ID-upload-demo-choose">选择文件</button>-->
+<!--                    <button type="button" class="layui-btn" id="ID-upload-demo-action">开始上传</button>-->
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/static/res/layui/layui.js}"></script>
+    <script>
+
+        layui.use(['form'], function () {
+            var form = layui.form;
+            var $ = layui.$;
+
+            // 监听提交按钮的点击事件
+            form.on('submit(patientEditBasic)', function (data) {
+                // 阻止表单的默认提交行为
+                var event = window.event || arguments.callee.caller.arguments[0];
+                event.preventDefault();
+                postData = {
+                    patientName: data.field['patientName'],
+
+                }
+                $.ajax({
+                    url: '/patientManagement/handoverRecordEdit',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(handoverRecord),
+                    success: function (str) {
+                        layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        layui.use(function(){
+            var upload = layui.upload;
+            // 渲染
+            upload.render({
+                elem: '.demo-class-accept',
+                url: '/common/upload', // 此处配置你自己的上传接口即可
+                auto: false,
+                accept: 'file',
+                // multiple: true,
+                bindAction: '#LAY-front-submit',
+                done: function(res){
+                    layer.msg('上传成功');
+                    console.log(res)
+                }
+            });
+        });
+    </script>
+
+
+</div>
+</body>
+</html>
+

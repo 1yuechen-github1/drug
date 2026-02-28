@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>1期</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/style/template.css}" media="all">
+
+    <style>
+        #cardTop {
+            width: 100%; /* 设置卡片宽度为100% */
+            height: 100vh; /* 设置卡片高度为视口高度 */
+            margin: 0; /* 可以移除卡片的外边距，以确保充满整个页面 */
+            padding: 0; /* 可以移除卡片的内边距，以确保充满整个页面 */
+            box-sizing: border-box; /* 让边框和内边距计算在卡片的宽度和高度内 */
+        }
+
+        #form-container {
+            background-color: #ffffff; /* 设置背景颜色为白色 */
+            padding: 20px; /* 可选，添加内边距以增加容器内部的填充 */
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="form-container"></div>
+
+<div class="layui-card" id="cardTop">
+    <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" action="" lay-filter="component-form-group"     >
+            <div class="layui-form-item" style="padding-left: 30px">
+                <div class="layui-input-group">
+                    <div class="layui-input-prefix" >
+                        日期
+                    </div>
+                    <input type="text"   placeholder="请选择日期" autocomplete="off" class="layui-input" id="birthdate-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="padding-left: 30px">
+                <div class="layui-input-group">
+                    <div class="layui-input-prefix" >
+                        操作医生
+                    </div>
+                    <input type="text" name="iDoctor" lay-verify="required" placeholder="请输入操作医生" autocomplete="off" class="layui-input" maxlength="18">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text" >
+                <label class="layui-form-label">交班记录</label>
+                <div class="layui-input-block">
+                    <textarea  name="record" placeholder="请填写交班记录" class="layui-textarea" id="edit"></textarea>
+                </div>
+            </div>
+            <div class="layui-container"  style="width: 100%;">
+                <span style="padding-left: 40px"></span>
+                <button id="zhongzhi" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i>种植 +</i> <!-- 添加图标 -->
+                </button>
+                <button id="zhigu" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i>植骨 +</i> <!-- 添加图标 -->
+                </button>
+                <button id="ruanzuzhi" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i>软组织移植 +</i> <!-- 添加图标 -->
+                </button>
+                <button id="chongxi" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i>冲洗 +</i> <!-- 添加图标 -->
+                </button>
+                <button id="chaixian" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i>拆线 +</i> <!-- 添加图标 -->
+                </button>
+
+                <div id="tablesContainer2"></div>
+                <div class="layui-form-item" style="margin-top: 10px">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+
+    </div>
+</div>
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--日期渲染器-->
+<script>
+    var seletedDate;
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      trigger: 'click',  // 设置触发方式为点击文本
+      done: function(value, date, endDate) {
+          seletedDate = value; // 将选择的日期值存储在全局变量中
+        }
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+
+
+  });
+</script>
+<!--填写表单提交部分-->
+<script>
+
+    layui.use(['form'], function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        // 监听提交按钮的点击事件
+        form.on('submit(patientEditBasic)', function (data) {
+            // 阻止表单的默认提交行为
+            var event = window.event || arguments.callee.caller.arguments[0];
+            event.preventDefault();
+
+            // 检查日期是否被选择
+            if (typeof seletedDate === 'undefined') {
+                layer.msg('日期不可为空', {icon: 5});
+                return false;
+            }
+            if (edit.getContent() === '') {
+                layer.msg('交班记录不可为空', {icon: 5});
+                return false;
+            }
+            // 主表单和关联子表单列表们
+            var handoverRecord = {};
+            var zhongzhiList = [];
+            var zhiguList = [];
+            var ruanzuzhiList = [];
+            var chongxiList = [];
+            var chaixianList = [];
+            // 拼接种植子表单列表
+            // TODO:程序效率低，调研先进方法
+            for (var i = 1; i <= zhongzhiIdx; i++) {
+                var zhongzhiTooth = data.field['zhongzhiTooth_' + i];
+                var immediateRestoration = data.field['immediateRestoration_' + i];
+                var boneType = data.field['boneType_' + i];
+                var gingivaThickness = data.field['gingivaThickness_' + i];
+                var implantSystem = data.field['implantSystem_' + i];
+                var implantType = data.field['implantType_' + i];
+                var implantDiameter = data.field['implantDiameter_' + i];
+                var implantLenght = data.field['implantLenght_' + i];
+                var implantationTorque = data.field['implantationTorque_' + i];
+                var healingMode = data.field['healingMode_' + i];
+                var healingAbutmentType = data.field['healingAbutmentType_' + i];
+                var healingAbutmentDiameter = data.field['healingAbutmentDiameter_' + i];
+                var healingAbutmentLength = data.field['healingAbutmentLength_' + i];
+                var guidePlate = data.field['guidePlate_' + i];
+                var guidePlateCompany = data.field['guidePlateCompany_' + i];
+                var guidePlatePrintingDate = data.field['guidePlatePrintingDate_' + i];
+                var guidePlateUsingDate = data.field['guidePlateUsingDate_' + i];
+                var guidePlatePosition = data.field['guidePlatePosition_' + i];
+                var guidePlateProtocol = data.field['guidePlateProtocol_' + i];
+                var guidePlateCBCT = data.field['guidePlateCBCT_' + i];
+                var guidePlateType = data.field['guidePlateType_' + i];
+                var guidePlateUsingType = data.field['guidePlateUsingType_' + i];
+                var guidePlateBarehanded = data.field['guidePlateBarehanded_' + i];
+                var guideSpecial = data.field['guideSpecial_' + i];
+
+                var zhongzhiItem = {
+                    zhongzhiTooth: zhongzhiTooth,
+                    immediateRestoration: immediateRestoration,
+                    boneType: boneType,
+                    gingivaThickness: gingivaThickness,
+                    implantSystem: implantSystem,
+                    implantType: implantType,
+                    implantDiameter: implantDiameter,
+                    implantLenght: implantLenght,
+                    implantationTorque: implantationTorque,
+                    healingMode: healingMode,
+                    healingAbutmentType: healingAbutmentType,
+                    healingAbutmentDiameter: healingAbutmentDiameter,
+                    healingAbutmentLength: healingAbutmentLength,
+                    guidePlate: guidePlate,
+                    guidePlateCompany: guidePlateCompany,
+                    guidePlatePrintingDate: guidePlatePrintingDate,
+                    guidePlateUsingDate: guidePlateUsingDate,
+                    guidePlatePosition: guidePlatePosition,
+                    guidePlateProtocol: guidePlateProtocol,
+                    guidePlateCBCT: guidePlateCBCT,
+                    guidePlateType: guidePlateType,
+                    guidePlateUsingType: guidePlateUsingType,
+                    guidePlateBarehanded: guidePlateBarehanded,
+                    guideSpecial: guideSpecial
+                };
+
+                zhongzhiList.push(zhongzhiItem);
+            }
+            // 拼接植骨子表单列表
+            for (var i = 1; i <= zhiguIdx; i++) {
+                var zhiguTooth = data.field['zhiguTooth_' + i];
+                var zhiguBoneType = data.field['zhiguBoneType_' + i];
+                var graftingMethod = data.field['graftingMethod_' + i];
+                var graftingWeight = data.field['graftingWeight_' + i];
+                var graftingMaterial = data.field['graftingMaterial_' + i];
+                var barrierMembrane = data.field['barrierMembrane_' + i];
+                var membraneLength = data.field['membraneLength_' + i];
+                var membraneWidth = data.field['membraneWidth_' + i];
+                var membraneSystem = data.field['membraneSystem_' + i];
+
+                var zhiguItem = {
+                    zhiguTooth: zhiguTooth,
+                    zhiguBoneType: zhiguBoneType,
+                    graftingMethod: graftingMethod,
+                    graftingWeight: graftingWeight,
+                    graftingMaterial: graftingMaterial,
+                    barrierMembrane: barrierMembrane,
+                    membraneLength: membraneLength,
+                    membraneWidth: membraneWidth,
+                    membraneSystem: membraneSystem
+                };
+
+                zhiguList.push(zhiguItem);
+            }
+            // 拼接软组织子表单列表
+            for (var i = 1; i <= ruanzuzhiIdx; i++) {
+                var yizhiTooth = data.field['yizhiTooth_' + i];
+                var yizhiMethod = data.field['yizhiMethod_' + i];
+
+                var yizhiItem = {
+                    yizhiTooth: yizhiTooth,
+                    yizhiMethod: yizhiMethod
+                };
+
+                ruanzuzhiList.push(yizhiItem);
+            }
+            // 拼接冲洗子表单列表
+            for (var i = 1; i <= chongxiIdx; i++) {
+                var chongxiTooth = data.field['chongxiTooth_' + i];
+                var chongxiHealingCondition = data.field['chongxiHealingCondition_' + i];
+
+                var chongxiItem = {
+                    chongxiTooth: chongxiTooth,
+                    chongxiHealingCondition: chongxiHealingCondition
+                };
+
+                chongxiList.push(chongxiItem);
+            }
+            // 拼接拆线子表单列表
+            for (var i = 1; i <= chaixianIdx; i++) {
+                var chaixianTooth = data.field['chaixianTooth_' + i];
+                var chaixianHealingCondition = data.field['chaixianHealingCondition_' + i];
+
+                var chaixianItem = {
+                    chaixianTooth: chaixianTooth,
+                    chaixianHealingCondition: chaixianHealingCondition
+                };
+
+                chaixianList.push(chaixianItem);
+            }
+            // 拼接发送到后端的数据
+            handoverRecord = {
+                record: edit.getContent(),
+                doctorName: data.field["iDoctor"],
+                recordDate: seletedDate,
+                patientId: [[${patientId}]],
+                stage: "phaseI",
+                zhongzhiList: zhongzhiList,
+                zhiguList: zhiguList,
+                ruanzuzhiList: ruanzuzhiList,
+                chongxiList: chongxiList,
+                chaixianList: chaixianList
+            }
+
+
+            $.ajax({
+                url: '/patientManagement/handoverRecordEdit',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(handoverRecord),
+                success: function (str) {
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+<!--填写表单按钮事件-->
+<script>
+    var zhongzhiIdx = 0;
+    var zhiguIdx = 0;
+    var ruanzuzhiIdx = 0;
+    var chongxiIdx = 0;
+    var chaixianIdx = 0;
+    jQuery(document).ready(function($) {
+        // 为新添加的二级种植按钮添加点击事件处理程序
+        $("#zhongzhi").click(function (e)  {
+            e.preventDefault(); // 阻止按钮的默认行为
+            e.stopPropagation(); // 阻止事件传播
+
+            console.log("zhongzhi按钮被点击了"); // 添加此行
+
+            // 处理 "二级 +" 按钮的点击事件
+            zhongzhiIdx++;
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+        <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">种植表单</div>
+            <div class="layui-card-body">
+                <table class="layui-table" data-index="${zhongzhiIdx}">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植牙位:
+                                </div>
+                                <input type="text" name="zhongzhiTooth_${zhongzhiIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    是否做即刻修复:
+                                </div>
+                                <select name="immediateRestoration_${zhongzhiIdx}"  id="iImmediateRestoration">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="5"></td>
+                </tr>
+                <!--种植体信息部分-->
+                <tr>
+                    <td style="height: 10px" colspan="7">
+                        种植体信息:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    骨质类型:
+                                </div>
+                                <select name="boneType_${zhongzhiIdx}"  id="boneType">
+                                    <option value="" selected></option>
+                                    <option value="I型">I型</option>
+                                    <option value="II型">II型</option>
+                                    <option value="III型">III型</option>
+                                    <option value="IV型">IV型</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    牙龈厚度:
+                                </div>
+                                <input type="text" name="gingivaThickness_${zhongzhiIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植体品牌:
+                                </div>
+                                <select name="implantSystem_${zhongzhiIdx}"  id="implantSystem">
+                                    <option value="" selected></option>
+                                    <option value="Astra">Astra</option>
+                                    <option value="Straumann">Straumann</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植体型号:
+                                </div>
+                                <select name="implantType_${zhongzhiIdx}"  id="implantType">
+                                    <option value="" selected></option>
+                                    <option value="Astra EV">Astra EV</option>
+                                    <option value="Astra TX">Astra TX</option>
+                                    <option value="Straumann BLT">Straumann BLT</option>
+                                    <option value="Straumann BLT SLA（根据品牌预设不同型号）">Straumann BLT SLA（根据品牌预设不同型号）</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植体直径:
+                                </div>
+                                <input type="text" name="implantDiameter_${zhongzhiIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植体长度:
+                                </div>
+                                <input type="text" name="implantLenght_${zhongzhiIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植入扭矩
+                                </div>
+                                <select name="implantationTorque_${zhongzhiIdx}"  id="implantationTorque">
+                                    <option value="" selected></option>
+                                    <option value="＜15N.cm">＜15N.cm</option>
+                                    <option value="15-20N.cm">15-20N.cm</option>
+                                    <option value="20-25N.cm">20-25N.cm</option>
+                                    <option value="25-30N.cm">25-30N.cm</option>
+                                    <option value="30-35N.cm">30-35N.cm</option>
+                                    <option value="35N.cm">35N.cm</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <!--愈合信息部分-->
+                <tr>
+                    <td style="height: 10px" colspan="7">
+                        愈合信息:
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 10px">
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    愈合方式:
+                                </div>
+                                <select name="healingMode_${zhongzhiIdx}"  id="healingMode">
+                                    <option value="" selected></option>
+                                    <option value="埋入">埋入</option>
+                                    <option value="穿龈">穿龈</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    愈合基台型号:
+                                </div>
+                                <input type="text" name="healingAbutmentType_${zhongzhiIdx}" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    愈合基台直径:
+                                </div>
+                                <input type="text" name="healingAbutmentDiameter_${zhongzhiIdx}" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    愈合基台穿龈高度:
+                                </div>
+                                <input type="text" name="healingAbutmentLength_${zhongzhiIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="3">
+
+</td>
+                </tr>
+
+                <!--导板信息部分-->
+                <tr>
+                    <td style="height: 10px" colspan="7">
+                        导板信息:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    是否做数字化导板:
+                                </div>
+                                <select name="guidePlate_${zhongzhiIdx}"  id="guidePlate">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    导板制作公司:
+                                </div>
+                                <select name="guidePlateCompany_${zhongzhiIdx}"  id="guidePlateCompany">
+                                    <option value="" selected></option>
+                                    <option value="固特福">固特福</option>
+                                    <option value="家鸿">家鸿</option>
+                                    <option value="康泰健">康泰健</option>
+                                    <option value="东院加工厂">东院加工厂</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item" >
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix" >
+                                    导板打印日期
+                                </div>
+                                <input type="text" name="guidePlatePrintingDate_${zhongzhiIdx}"  placeholder="请选择日期" autocomplete="off" class="layui-input" id="guidePlatePrintingDate">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix" >
+                                    导板使用日期
+                                </div>
+                                <input type="text" name="guidePlateUsingDate_${zhongzhiIdx}"  placeholder="请选择日期" autocomplete="off" class="layui-input" id="guidePlateUsingDate">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    导板就位情况:
+                                </div>
+                                <select name="guidePlatePosition_${zhongzhiIdx}"  id="guidePlatePosition">
+                                    <option value="" selected></option>
+                                    <option value="就位良好">就位良好</option>
+                                    <option value="调整后就位">调整后就位</option>
+                                    <option value="调整后仍未完全就位">调整后仍未完全就位</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    导板协议是否改动:
+                                </div>
+                                <select name="guidePlateProtocol_${zhongzhiIdx}"  id="guidePlateProtocol">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    后续是否有拍CT进行前后对比
+                                </div>
+                                <select name="guidePlateCBCT_${zhongzhiIdx}"  id="guidePlateCBCT">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    导板设计类型
+                                </div>
+                                <select name="guidePlateType_${zhongzhiIdx}"  id="guidePlateType">
+                                    <option value="" selected></option>
+                                    <option value="全程导板">全程导板</option>
+                                    <option value="半程导板">半程导板</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    导板使用方式
+                                </div>
+                                <select name="guidePlateUsingType_${zhongzhiIdx}"  id="guidePlateUsingType">
+                                    <option value="" selected></option>
+                                    <option value="全程导板">全程导板</option>
+                                    <option value="半程导板">半程导板</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    有无混合自由手
+                                </div>
+                                <select name="guidePlateBarehanded_${zhongzhiIdx}"  id="guidePlateBarehanded">
+                                    <option value="" selected></option>
+                                    <option value="有">有</option>
+                                    <option value="无">无</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    特殊点
+                                </div>
+                                <input type="text" name="guideSpecial_${zhongzhiIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>
+
+            </tbody>
+        </table>
+            </div>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+
+                layui.use('laydate', function() {
+                var laydate = layui.laydate;
+
+                // 设置出生年月输入框的laydate
+                laydate.render({
+                elem: '#guidePlatePrintingDate',
+                type: 'date',
+                trigger: 'click',  // 设置触发方式为点击文本
+            });
+                laydate.render({
+                elem: '#guidePlateUsingDate',
+                type: 'date',
+                trigger: 'click',  // 设置触发方式为点击文本
+                //theme: '#393d49'
+                // 如果需要，可以添加更多选项
+            });
+            });
+
+            layui.use('form', function() {
+                layui.form.render('select'); // 如果有下拉框需要重新渲染
+            });
+        });
+        // 为新添加的二级植骨按钮添加点击事件处理程序
+        $("#zhigu").click(function (e)  {
+            e.preventDefault(); // 阻止按钮的默认行为
+            zhiguIdx++;
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+        <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">植骨表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨牙位:
+                                </div>
+                                <input type="text" name="zhiguTooth_${zhiguIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    骨质类型:
+                                </div>
+                                <select name="zhiguBoneType_${zhiguIdx}"  id="zhiguBoneType">
+                                    <option value="" selected></option>
+                                    <option value="I型">I型</option>
+                                    <option value="II型">II型</option>
+                                    <option value="III型">III型</option>
+                                    <option value="IV型">IV型</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨术式:
+                                </div>
+                                <select name="graftingMethod_${zhiguIdx}" id="graftingMethod">
+                                    <option value="" selected></option>
+                                    <option value="GBR技术">GBR技术</option>
+                                    <option value="上颌窦底内提升术">上颌窦底内提升术</option>
+                                    <option value="上颌窦底外提升术">上颌窦底外提升术</option>
+                                    <option value="onlay植骨技术">onlay植骨技术</option>
+                                    <option value="香肠技术">香肠技术</option>
+                                    <option value="骨劈开术">骨劈开术</option>
+                                    <option value="骨挤压术">骨挤压术</option>
+                                    <option value="牵张成骨术">牵张成骨术</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨量:
+                                </div>
+                                <input type="text" name="graftingWeight_${zhiguIdx}" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨材料:
+                                </div>
+                                <select name="graftingMaterial_${zhiguIdx}"  id="graftingMaterial">
+                                    <option value="" selected></option>
+                                    <option value="自体骨屑">自体骨屑</option>
+                                    <option value="Bio-oss">Bio-oss</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    是否使用屏障膜:
+                                </div>
+                                <select name="barrierMembrane_${zhiguIdx}"  id="barrierMembrane">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    屏障膜长度:
+                                </div>
+                                <input type="text" name="membraneLength_${zhiguIdx}" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    屏障膜宽度:
+                                </div>
+                                <input type="text" name="membraneWidth_${zhiguIdx}" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    屏障膜品牌:
+                                </div>
+                                <select name="membraneSystem_${zhiguIdx}"  id="membraneSystem">
+                                    <option value="" selected></option>
+                                    <option value="海奥生物膜">海奥生物膜</option>
+                                    <option value="Bio-Gide">Bio-Gide</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="5"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+            layui.use('form', function() {
+                layui.form.render('select'); // 如果有下拉框需要重新渲染
+            });
+        });
+        // 为新添加的二级软组织移植按钮添加点击事件处理程序
+        $("#ruanzuzhi").click(function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            ruanzuzhiIdx++;
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+                <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">软组织移植表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px" >
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植牙位:
+                                </div>
+                                <input type="text" name="yizhiTooth_${ruanzuzhiIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    移植方法:
+                                </div>
+                            <input type="text" name="yizhiMethod_${ruanzuzhiIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+            layui.use('form', function() {
+                layui.form.render('select'); // 如果有下拉框需要重新渲染
+            });
+        });
+        // 为新添加的二级冲洗按钮添加点击事件处理程序
+        $("#chongxi").click(function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            chongxiIdx++;
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+                <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">冲洗表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px" >
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植牙位:
+                                </div>
+                                <input type="text" name="chongxiTooth_${chongxiIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    伤口愈合情况:
+                                </div>
+                                <select name="chongxiHealingCondition_${chongxiIdx}"  id="chongxiHealingCondition">
+                                    <option value="" selected></option>
+                                    <option value="良好">良好</option>
+                                    <option value="一般">一般</option>
+                                    <option value="差">差</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+            layui.use('form', function() {
+                layui.form.render('select'); // 如果有下拉框需要重新渲染
+            });
+        });
+        // 为新添加的二级拆线按钮添加点击事件处理程序
+        $("#chaixian").click(function (e)  {
+            e.preventDefault(); // 阻止按钮的默认行为
+            chaixianIdx++;
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+                <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">拆线表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植牙位:
+                                </div>
+                                <input type="text" name="chaixianTooth_${chaixianIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    伤口愈合情况:
+                                </div>
+                                <select name="chaixianHealingCondition_${chaixianIdx}"  id="chaixianHealingCondition">
+                                    <option value="" selected></option>
+                                    <option value="良好">良好</option>
+                                    <option value="一般">一般</option>
+                                    <option value="差">差</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+            layui.use('form', function() {
+                layui.form.render('select'); // 如果有下拉框需要重新渲染
+            });
+        });
+    });
+</script>
+<!--富文本编辑-->
+<script>
+    var edit;
+    layui.extend({
+        tinymce: '/static/layui_exts/tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer'], function () {
+        var t = layui.tinymce
+            , util = layui.util
+            , layer = layui.layer
+            , $ = layui.$
+
+        edit = t.render({
+            elem: "#edit",
+            height: 300,
+            menubar: false, // 禁用菜单栏
+            toolbar:'undo redo | forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright    | link bullist numlist   | formatselect  fontsizeselect',
+            // 其余配置可参考官方文档
+        },function(opt,edit){
+            //加载完成后回调
+            // record = edit.getContent();
+            // console.log("huidiao edit:"+JSON.stringify(eidt));
+        });
+        // content = t.getContent(edit);
+        // console.log("edit:"+JSON.stringify(edit));
+        // record = t.get('#edit').getContent();
+        // console.log("content:"+JSON.stringify(t.get('#edit').getContent()));
+        // console.log(edit);
+        record = edit.getContent();
+
+    });
+
+
+</script>
+<!--动态加载表单-->
+<script>
+    //展开隐藏按钮函数
+    function toggleFormVisibility(formId) {
+        var form = document.getElementById(formId);
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+    // 提交表单的函数
+    // TODO: 真正向后端发送更新post
+    function submitForm(formId) {
+        var form = document.getElementById(formId);
+        var editorContent = tinymce.get('record-input' + formId).getContent(); // 获取富文本编辑器的内容
+        var formData = new FormData(form);
+        formData.append('record', editorContent); // 将富文本内容添加到表单数据
+        $.ajax({
+            url: '/patientManagement/patientFirstmedicalEdit',
+            type: 'POST',
+            data: formData,
+            processData: false, // 防止jQuery处理数据
+            contentType: false, // 防止jQuery设置Content-Type
+            success: function (str) {
+                layer.msg(str.msg, { icon: str.icon, anim: str.anim });
+            }
+        });
+    }
+
+    function createZhongzhiForm(data) {
+        // 创建主卡片容器
+        var card = document.createElement("div");
+        card.className = "layui-card";
+        card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+        // 卡片标题
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "layui-card-header";
+        cardHeader.textContent = "种植表单";
+
+        // 卡片主体
+        var cardBody = document.createElement("div");
+        cardBody.className = "layui-card-body";
+
+        // 创建包含表格的主体
+        var table = document.createElement("table");
+        table.className = "layui-table";
+
+        // 表格主体
+        var tbody = document.createElement("tbody");
+
+        // 创建行 1
+        var row1 = document.createElement("tr");
+
+        // 单元格 1
+        var cell11 = document.createElement("td");
+        var div11 = createFormElement("种植牙位:", "zhongzhiTooth", "required", data.zhongzhiTooth);
+        cell11.appendChild(div11);
+
+        // 单元格 2
+        var cell12 = document.createElement("td");
+        var div12 = createFormElement("是否做即刻修复:", "immediateRestoration", null, data.immediateRestoration);
+        cell12.appendChild(div12);
+
+        // 单元格 3（跨越 5 列）
+        var cell13 = document.createElement("td");
+        cell13.colSpan = 5;
+
+        // 将单元格添加到第一行
+        row1.appendChild(cell11);
+        row1.appendChild(cell12);
+        row1.appendChild(cell13);
+
+        // 创建行 2（种植体信息部分）
+        var row2 = document.createElement("tr");
+        var cell21 = document.createElement("td");
+        cell21.colSpan = 7;
+        cell21.textContent = "种植体信息:";
+        row2.appendChild(cell21);
+
+        // 创建行 3（种植体信息表单）
+        var row3 = document.createElement("tr");
+        var cell31 = document.createElement("td");
+        var div31 = createFormElement("骨质类型:", "boneType", null, data.boneType);
+        cell31.appendChild(div31);
+
+        var cell32 = document.createElement("td");
+        var div32 = createFormElement("牙龈厚度:", "gingivaThickness", null, data.gingivaThickness);
+        cell32.appendChild(div32);
+
+        var cell33 = document.createElement("td");
+        var div33 = createFormElement("种植体品牌:", "implantSystem", null, data.implantSystem);
+        cell33.appendChild(div33);
+
+        var cell34 = document.createElement("td");
+        var div34 = createFormElement("种植体型号:", "implantType", null, data.implantType);
+        cell34.appendChild(div34);
+
+        var cell35 = document.createElement("td");
+        var div35 = createFormElement("种植体直径:", "implantDiameter", null, data.implantDiameter);
+        cell35.appendChild(div35);
+
+        var cell36 = document.createElement("td");
+        var div36 = createFormElement("种植体长度:", "implantLenght", null, data.implantLenght);
+        cell36.appendChild(div36);
+
+        var cell37 = document.createElement("td");
+        var div37 = createFormElement("植入扭矩:", "implantationTorque", null, data.implantationTorque);
+        cell37.appendChild(div37);
+
+        // 将单元格添加到第3行
+        row3.appendChild(cell31);
+        row3.appendChild(cell32);
+        row3.appendChild(cell33);
+        row3.appendChild(cell34);
+        row3.appendChild(cell35);
+        row3.appendChild(cell36);
+        row3.appendChild(cell37);
+
+
+        // 创建行 4（愈合信息部分）
+        var row4 = document.createElement("tr");
+        var cell41 = document.createElement("td");
+        cell41.colSpan = 7;
+        cell41.textContent = "愈合信息:";
+        row4.appendChild(cell41);
+
+        // 创建行 5
+        var row5 = document.createElement("tr");
+
+        var cell51 = document.createElement("td");
+        var div51 = createFormElement("愈合方式:", "healingMode", null,data.healingMode);
+        cell51.appendChild(div51);
+
+        var cell52 = document.createElement("td");
+        var div52 = createFormElement("愈合基台型号:", "healingAbutmentType", null, data.healingAbutmentType);
+        cell52.appendChild(div52);
+
+        var cell53 = document.createElement("td");
+        var div53 = createFormElement("愈合基台直径:", "healingAbutmentDiameter", "required", data.healingAbutmentDiameter);
+        cell53.appendChild(div53);
+
+        var cell54 = document.createElement("td");
+        var div54 = createFormElement("愈合基台穿龈高度:", "healingAbutmentLength", null, data.healingAbutmentLength);
+        cell54.appendChild(div54);
+
+        var cell55 = document.createElement("td");
+        cell55.colSpan = 3;
+
+        // 将单元格添加到第一行
+        row5.appendChild(cell51);
+        row5.appendChild(cell52);
+        row5.appendChild(cell53);
+        row5.appendChild(cell54);
+        row5.appendChild(cell55);
+
+        // 创建行 6（导板信息部分）
+        var row6 = document.createElement("tr");
+        var cell61 = document.createElement("td");
+        cell61.colSpan = 7;
+        cell61.textContent = "导板信息:";
+        row6.appendChild(cell61);
+
+        // 创建行 7（导板信息表单）
+        var row7 = document.createElement("tr");
+        var cell71 = document.createElement("td");
+        var div71 = createFormElement("是否做数字化导板:", "guidePlate", null, data.guidePlate);
+        cell71.appendChild(div71);
+
+        var cell72 = document.createElement("td");
+        var div72 = createFormElement("导板制作公司:", "guidePlateCompany", null, data.guidePlateCompany);
+        cell72.appendChild(div72);
+
+        var cell73 = document.createElement("td");
+        var div73 = createFormElement("导板打印日期:", "guidePlatePrintingDate", null, data.guidePlatePrintingDate);
+        cell73.appendChild(div73);
+
+        var cell74 = document.createElement("td");
+        var div74 = createFormElement("导板使用日期:", "guidePlateUsingDate", null, data.guidePlateUsingDate);
+        cell74.appendChild(div74);
+
+        var cell75 = document.createElement("td");
+        var div75 = createFormElement("导板就位情况:", "guidePlatePosition", null, data.guidePlatePosition);
+        cell75.appendChild(div75);
+
+        var cell76 = document.createElement("td");
+        var div76 = createFormElement("导板协议是否改动:", "guidePlateProtocol", null, data.guidePlateProtocol);
+        cell76.appendChild(div76);
+
+        var cell77 = document.createElement("td");
+        var div77 = createFormElement("后续是否有拍CT进行前后对比:", "guidePlateCBCT", null, data.guidePlateCBCT);
+        cell77.appendChild(div77);
+
+        // 将单元格添加到第7行
+        row7.appendChild(cell71);
+        row7.appendChild(cell72);
+        row7.appendChild(cell73);
+        row7.appendChild(cell74);
+        row7.appendChild(cell75);
+        row7.appendChild(cell76);
+        row7.appendChild(cell77);
+
+        // 创建行 8
+        var row8 = document.createElement("tr");
+
+        var cell81 = document.createElement("td");
+        var div81 = createFormElement("导板设计类型:", "guidePlateType", null,data.guidePlateType);
+        cell81.appendChild(div81);
+
+        var cell82 = document.createElement("td");
+        var div82 = createFormElement("导板使用方式:", "guidePlateUsingType", null, data.guidePlateUsingType);
+        cell82.appendChild(div82);
+
+        var cell83 = document.createElement("td");
+        var div83 = createFormElement("有无混合自由手:", "guidePlateBarehanded",  null, data.guidePlateBarehanded);
+        cell83.appendChild(div83);
+
+        var cell84 = document.createElement("td");
+        var div84 = createFormElement("特殊点:", "special", null, data.guideSpecial);
+        cell84.appendChild(div84);
+
+        var cell85 = document.createElement("td");
+        cell85.colSpan = 3;
+
+        // 将单元格添加到第一行
+        row8.appendChild(cell81);
+        row8.appendChild(cell82);
+        row8.appendChild(cell83);
+        row8.appendChild(cell84);
+        row8.appendChild(cell85);
+
+        // 继续添加更多行，遵循相同的结构
+
+        // 将行添加到表格主体
+        tbody.appendChild(row1);
+        tbody.appendChild(row2);
+        tbody.appendChild(row3);
+        tbody.appendChild(row4);
+        tbody.appendChild(row5);
+        tbody.appendChild(row6);
+        tbody.appendChild(row7);
+        tbody.appendChild(row8);
+
+        // 最后，将表格主体添加到表格中
+        table.appendChild(tbody);
+
+        // 将表格添加到卡片主体
+        cardBody.appendChild(table);
+
+        // 将卡片标题和卡片主体添加到主卡片
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+
+        return card;
+    }
+
+    function createZhiguForm(data){
+        // 创建主卡片容器
+        var card = document.createElement("div");
+        card.className = "layui-card";
+        card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+        // 卡片标题
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "layui-card-header";
+        cardHeader.textContent = "植骨表单";
+
+        // 卡片主体
+        var cardBody = document.createElement("div");
+        cardBody.className = "layui-card-body";
+
+        // 创建包含表格的主体
+        var table = document.createElement("table");
+        table.className = "layui-table";
+
+        // 表格主体
+        var tbody = document.createElement("tbody");
+
+        // 创建行 1
+        var row1 = document.createElement("tr");
+        var cell11 = document.createElement("td");
+        var div11 = createFormElement("植骨牙位:", "zhiguTooth", null, data.zhiguTooth);
+        cell11.appendChild(div11);
+
+        var cell12 = document.createElement("td");
+        var div12 = createFormElement("骨质类型:", "zhiguBoneType", null, data.zhiguBoneType);
+        cell12.appendChild(div12);
+
+        var cell13 = document.createElement("td");
+        var div13 = createFormElement("植骨术式:", "graftingMethod", null, data.graftingMethod);
+        cell13.appendChild(div13);
+
+        var cell14 = document.createElement("td");
+        var div14 = createFormElement("植骨量:", "graftingWeight", null, data.graftingWeight);
+        cell14.appendChild(div14);
+
+        var cell15 = document.createElement("td");
+        var div15 = createFormElement("植骨材料:", "graftingMaterial", null, data.graftingMaterial);
+        cell15.appendChild(div15);
+
+        var cell16 = document.createElement("td");
+        var div16 = createFormElement("是否使用屏障膜:", "barrierMembrane", null, data.barrierMembrane);
+        cell16.appendChild(div16);
+
+        var cell17 = document.createElement("td");
+        var div17 = createFormElement("屏障膜长度:", "membraneLength", null, data.membraneLength);
+        cell17.appendChild(div17);
+
+        // 将单元格添加到第1行
+        row1.appendChild(cell11);
+        row1.appendChild(cell12);
+        row1.appendChild(cell13);
+        row1.appendChild(cell14);
+        row1.appendChild(cell15);
+        row1.appendChild(cell16);
+        row1.appendChild(cell17);
+
+
+        // 将行添加到表格主体
+        tbody.appendChild(row1);
+
+        // 创建行 1
+        var row2 = document.createElement("tr");
+
+        // 单元格 1
+        var cell21 = document.createElement("td");
+        var div21 = createFormElement("屏障膜宽度:", "membraneWidth", null,data.membraneWidth);
+        cell21.appendChild(div21);
+
+        // 单元格 2
+        var cell22 = document.createElement("td");
+        var div22 = createFormElement("屏障膜品牌:", "membraneSystem", null, data.membraneSystem);
+        cell22.appendChild(div22);
+
+        // 单元格 3（跨越 5 列）
+        var cell23 = document.createElement("td");
+        cell23.colSpan = 5;
+
+        // 将单元格添加到第一行
+        row2.appendChild(cell21);
+        row2.appendChild(cell22);
+        row2.appendChild(cell23);
+
+        tbody.appendChild(row2);
+
+        // 最后，将表格主体添加到表格中
+        table.appendChild(tbody);
+
+        // 将表格添加到卡片主体
+        cardBody.appendChild(table);
+
+        // 将卡片标题和卡片主体添加到主卡片
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+
+        return card;
+    }
+
+    function createRuanzuzhiForm(data){
+        // 创建主卡片容器
+        var card = document.createElement("div");
+        card.className = "layui-card";
+        card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+        // 卡片标题
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "layui-card-header";
+        cardHeader.textContent = "软组织移植表单";
+
+        // 卡片主体
+        var cardBody = document.createElement("div");
+        cardBody.className = "layui-card-body";
+
+        // 创建包含表格的主体
+        var table = document.createElement("table");
+        table.className = "layui-table";
+
+        // 表格主体
+        var tbody = document.createElement("tbody");
+
+        // 创建行 1
+        var row1 = document.createElement("tr");
+        var cell11 = document.createElement("td");
+        var div11 = createFormElement("种植牙位:", "yizhiTooth", null, data.yizhiTooth);
+        cell11.appendChild(div11);
+
+        var cell12 = document.createElement("td");
+        var div12 = createFormElement("移植方法:", "yizhiMethod", null, data.yizhiMethod);
+        cell12.appendChild(div12);
+
+
+
+        // 将单元格添加到第1行
+        row1.appendChild(cell11);
+        row1.appendChild(cell12);
+
+        // 将行添加到表格主体
+        tbody.appendChild(row1);
+
+
+        // 最后，将表格主体添加到表格中
+        table.appendChild(tbody);
+
+
+
+        // 将表格添加到卡片主体
+        cardBody.appendChild(table);
+
+        // 将卡片标题和卡片主体添加到主卡片
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+
+        return card;
+
+    }
+
+    function createChongxiForm(data){
+        // 创建主卡片容器
+        var card = document.createElement("div");
+        card.className = "layui-card";
+        card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+        // 卡片标题
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "layui-card-header";
+        cardHeader.textContent = "冲洗表单";
+
+        // 卡片主体
+        var cardBody = document.createElement("div");
+        cardBody.className = "layui-card-body";
+
+        // 创建包含表格的主体
+        var table = document.createElement("table");
+        table.className = "layui-table";
+
+        // 表格主体
+        var tbody = document.createElement("tbody");
+
+        // 创建行 1
+        var row1 = document.createElement("tr");
+        var cell11 = document.createElement("td");
+        var div11 = createFormElement("种植牙位:", "chongxiTooth", null, data.chongxiTooth);
+        cell11.appendChild(div11);
+
+        var cell12 = document.createElement("td");
+        var div12 = createFormElement("伤口愈合情况:", "chongxiHealingCondition", null, data.chongxiHealingCondition);
+        cell12.appendChild(div12);
+
+
+
+        // 将单元格添加到第1行
+        row1.appendChild(cell11);
+        row1.appendChild(cell12);
+
+        // 将行添加到表格主体
+        tbody.appendChild(row1);
+
+
+        // 最后，将表格主体添加到表格中
+        table.appendChild(tbody);
+
+
+
+        // 将表格添加到卡片主体
+        cardBody.appendChild(table);
+
+        // 将卡片标题和卡片主体添加到主卡片
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+
+        return card;
+
+    }
+
+    function createChaixianForm(data){
+        // 创建主卡片容器
+        var card = document.createElement("div");
+        card.className = "layui-card";
+        card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+        // 卡片标题
+        var cardHeader = document.createElement("div");
+        cardHeader.className = "layui-card-header";
+        cardHeader.textContent = "拆线表单";
+
+        // 卡片主体
+        var cardBody = document.createElement("div");
+        cardBody.className = "layui-card-body";
+
+        // 创建包含表格的主体
+        var table = document.createElement("table");
+        table.className = "layui-table";
+
+        // 表格主体
+        var tbody = document.createElement("tbody");
+
+        // 创建行 1
+        var row1 = document.createElement("tr");
+        var cell11 = document.createElement("td");
+        var div11 = createFormElement("种植牙位:", "chaixianTooth", null, data.chaixianTooth);
+        cell11.appendChild(div11);
+
+        var cell12 = document.createElement("td");
+        var div12 = createFormElement("伤口愈合情况:", "chaixianHealingCondition", null, data.chaixianHealingCondition);
+        cell12.appendChild(div12);
+
+
+
+        // 将单元格添加到第1行
+        row1.appendChild(cell11);
+        row1.appendChild(cell12);
+
+        // 将行添加到表格主体
+        tbody.appendChild(row1);
+
+
+        // 最后，将表格主体添加到表格中
+        table.appendChild(tbody);
+
+
+
+        // 将表格添加到卡片主体
+        cardBody.appendChild(table);
+
+        // 将卡片标题和卡片主体添加到主卡片
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+
+        return card;
+
+    }
+
+
+    function createFormElement(labelText, name, verify = null, value = "") {
+        var div = document.createElement("div");
+        div.className = "layui-form-item";
+        var inputGroup = document.createElement("div");
+        inputGroup.className = "layui-input-group";
+        var inputPrefix = document.createElement("div");
+        inputPrefix.className = "layui-input-prefix";
+        inputPrefix.textContent = labelText;
+
+        var input = document.createElement("input");
+        input.type = "text";
+        input.name = name;
+        if (verify) {
+            input.setAttribute("lay-verify", verify);
+        }
+        input.placeholder = "";
+        input.setAttribute("autocomplete", "off");
+        input.className = "layui-input";
+        input.value = value; // Set the initial value
+
+        inputGroup.appendChild(inputPrefix);
+        inputGroup.appendChild(input);
+        div.appendChild(inputGroup);
+
+        return div;
+    }
+
+
+
+    function addDynamicForm(data, recordDate) {
+
+
+        var formId = "dynamic-form-" + data.id;
+        // Create a button to show/hide the form
+        var toggleButton = document.createElement("button");
+        toggleButton.textContent = data.recordDate;
+        toggleButton.style.marginLeft = "30px"; // 设置按钮的左外边距为30px
+        toggleButton.style.marginBottom = "15px"; // 设置按钮的左外边距为30px
+        toggleButton.addEventListener("click", function () {
+            toggleFormVisibility(formId);
+        });
+
+        // Append the toggle button to the form-container
+        var formContainer = document.getElementById("form-container");
+        formContainer.appendChild(toggleButton);
+
+        // Create the form div and set its attributes
+        var newForm = document.createElement("div");
+        newForm.id = formId;
+        newForm.style.display = "none"; // Initially hide the form
+        // 如果携带日期参数则显示该日期的交班记录
+        if (recordDate && recordDate == data.recordDate) {
+            newForm.style.display = "block";
+        }
+        // 创建一个新的表单元素
+        //var newForm = document.createElement("form");
+        newForm.classList.add("layui-form"); // 添加Layui的表单类，以便使用Layui的样式和验证
+
+        // 创建深色分割线
+        var separatorLine = document.createElement("hr");
+        separatorLine.classList.add("layui-border-black"); // 添加Layui的深色分割线类
+
+        // 创建输入框：日期
+        var dateInputDiv = document.createElement("div");
+        dateInputDiv.classList.add("layui-input-group", "layui-form-item");
+        dateInputDiv.style.paddingLeft = "30px"; // 设置左侧内边距
+
+        // 创建日期标签的前缀
+        var dateLabelPrefix = document.createElement("div");
+        dateLabelPrefix.classList.add("layui-input-prefix");
+        dateLabelPrefix.textContent = "日期";
+
+        var dateInput = document.createElement("input");
+        dateInput.type = "text";
+        dateInput.name = "recordDate";
+        dateInput.value = data.recordDate;
+        dateInput.id = "birthdate-input";
+        dateInput.classList.add("layui-input");
+        //dateInput.id = "date-input" + data.id; // 使用唯一的ID以区分不同表单项
+        dateInputDiv.appendChild(dateLabelPrefix);
+        dateInputDiv.appendChild(dateInput);
+
+        newForm.appendChild(dateInputDiv);
+
+        // 创建输入框：操作医生
+        var doctorInputDiv = document.createElement("div");
+        doctorInputDiv.classList.add("layui-input-group", "layui-form-item");
+        doctorInputDiv.style.paddingLeft = "30px"; // 设置左侧内边距
+
+        // 创建操作医生标签
+        var doctorPrefix = document.createElement("div");
+        doctorPrefix.classList.add("layui-input-prefix");
+        doctorPrefix.textContent = "操作医生";
+
+        var doctorInput = document.createElement("input");
+        doctorInput.type = "text";
+        doctorInput.name = "doctorName";
+        doctorInput.value = data.doctorName;
+        doctorInput.id = "doctor-input" + data.id;
+        doctorInput.classList.add("layui-input");
+
+        doctorInputDiv.appendChild(doctorPrefix);
+        doctorInputDiv.appendChild(doctorInput);
+
+        newForm.appendChild(doctorInputDiv);
+
+        // 创建文本框：交班记录
+        var recordTextareaDiv = document.createElement("div");
+        recordTextareaDiv.classList.add("layui-form-item");
+
+        var recordTextareaLabel = document.createElement("label");
+        recordTextareaLabel.classList.add("layui-form-label");
+        recordTextareaLabel.textContent = "交班记录";
+        recordTextareaDiv.appendChild(recordTextareaLabel);
+
+        var recordTextareaBlock = document.createElement("div");
+        recordTextareaBlock.classList.add("layui-input-block");
+
+        var recordTextarea = document.createElement("textarea");
+        recordTextarea.name = "record";
+        recordTextarea.value = data.record;
+        recordTextarea.id = "record-input" + data.id;
+        recordTextarea.classList.add("layui-textarea");
+        recordTextareaBlock.appendChild(recordTextarea);
+
+        recordTextareaDiv.appendChild(recordTextareaBlock);
+
+        newForm.appendChild(recordTextareaDiv);
+
+        // 遍历数据并动态生成表单
+        for (var i = 0; i < data.procedures.length; i++) {
+            switch (data.procedures[i].type){
+                case "zhongzhi":
+                    var zhongzhiForm = createZhongzhiForm(data.procedures[i]);
+                    newForm.appendChild(zhongzhiForm);
+                    break;
+                case "zhigu":
+                    var zhiguForm = createZhiguForm(data.procedures[i]);
+                    newForm.appendChild(zhiguForm);
+                    break;
+                case "ruanzuzhiyizhi":
+                    var ruanzuzhiyizhiForm = createRuanzuzhiForm(data.procedures[i]);
+                    newForm.appendChild(ruanzuzhiyizhiForm);
+                    break;
+                case "chongxi":
+                    var chongxiForm = createChongxiForm(data.procedures[i]);
+                    newForm.appendChild(chongxiForm);
+                    break;
+                case "chaixian":
+                    var chaixianForm = createChaixianForm(data.procedures[i]);
+                    newForm.appendChild(chaixianForm);
+                    break;
+
+            }
+        }
+
+        //提交按钮
+        var submitButton = document.createElement("button");
+        submitButton.textContent = "提交";
+        submitButton.classList.add("layui-btn");
+        submitButton.setAttribute("lay-submit", "");
+        submitButton.setAttribute("lay-filter", "submitForm");
+        submitButton.style.marginLeft = "30px"; // 设置按钮的左外边距为30px
+        submitButton.addEventListener("click", function () {
+            submitForm(formId);
+        });
+
+        newForm.appendChild(submitButton);
+
+        //在表单结尾添加分割线
+        newForm.appendChild(separatorLine);
+
+
+        // 最后，将新表单添加到页面中
+        //var formContainer = document.getElementById("form-container");
+        formContainer.appendChild(newForm);
+
+        layui.extend({
+            tinymce: '/static/layui_exts/tinymce/tinymce'
+        }).use(['tinymce', 'util', 'layer'], function () {
+            var t = layui.tinymce
+                , util = layui.util
+                , layer = layui.layer
+                , $ = layui.$
+
+            var textareaId = "record-input" + data.id;
+
+            var edit = t.render({
+                elem: "#"+textareaId,
+                height: 300,
+                menubar: false, // 禁用菜单栏
+                toolbar:'undo redo | forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright    | link bullist numlist   | formatselect  fontsizeselect',
+                // 其余配置可参考官方文档
+            },function(opt,edit){
+                //加载完成后回调
+            });
+
+
+
+        });
+
+    }
+
+</script>
+<!--数据部分-->
+<script>
+    layui.use(function (){
+        var $ = layui.$;
+        $.ajax({
+            url: '/patientManagement/handoverRecord' + "?patientId=" + [[${patientId}]] + "&stage=phaseI",
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data);
+                var serverData = [];
+                var cnt = 1;
+                data['data'].forEach(function (item) {
+                    cnt++;
+
+                   var arr = [];
+                   item['zhongzhiList'].forEach(function (zhongzhi) {
+                       zhongzhi['type'] = "zhongzhi";
+                       arr.push(zhongzhi);
+                   });
+                   item['zhiguList'].forEach(function (zhigu) {
+                       zhigu['type'] = "zhigu";
+                       arr.push(zhigu);
+                   });
+                   item['ruanzuzhiList'].forEach(function (ruanzuzhi) {
+                       ruanzuzhi['type'] = "ruanzuzhiyizhi";
+                       arr.push(ruanzuzhi);
+                   });
+                    item['chongxiList'].forEach(function (chongxi) {
+                        chongxi['type'] = "chongxi";
+                        arr.push(chongxi);
+                    });
+                   item['chaixianList'].forEach(function (chaixian) {
+                       chaixian['type'] = "chaixian";
+                       arr.push(chaixian);
+                   });
+                    var record = {
+                        id: cnt,
+                        recordDate: item['recordDate'],
+                        doctorName: item['doctorName'],
+                        record: item['record'],
+                        procedures: arr
+                    } ;
+                   serverData.push(record);
+                });
+                // 遍历数据并动态生成表单
+                for (var i = 0; i < serverData.length; i++) {
+                    addDynamicForm(serverData[i], '[[${recordDate}]]');
+                }
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    });
+
+
+</script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>基本信息</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+<!--    <script th:src="@{/static/jquery/jquery.min.js}"></script>-->
+<!--    <script th:src="@{/static/layui/layui.js}"></script>-->
+
+
+    <style>
+        .align-input {
+            display: flex;
+            align-items: center;
+        }
+        .align-input .layui-form-label {
+            flex: 0 0 180px; /* 设置标签宽度 */
+            text-align: -moz-center; /* 将标签内容对齐 */
+        }
+        .align-input .layui-input-block {
+            flex: 1; /* 让输入框占据剩余的空间 */
+            margin-left: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="id" id="id-input1" class="layui-input layui-hide" th:value="${firstmedical?.id}"/>
+                <input name="medicalrecordid" id="id-input2" class="layui-input layui-hide" th:value="${firstmedical?.medicalrecordid}"/>
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">出诊记录</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="firstRecord" th:value="${firstmedical?.firstRecord}" lay-verify="required" placeholder="初诊记录" autocomplete="off" class="layui-input" maxlength="18">
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">出诊日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="firstDate" th:value="${firstmedical?.firstDate}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+                    </div>
+                </div>
+
+
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否拍初诊全景片</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="firstPanoramicXray" id="firstPanoramicXray" th:value="${firstmedical?.firstPanoramicXray}" placeholder="点击上传文件" readonly class="layui-input">
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否拍CBCT</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" name="hospitalcode" th:value="${patientBasicInf?.hospitalcode}" lay-verify="required" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="firstCbct" lay-verify="required" id="nameSelect">
+                            <option th:value="${firstmedical?.firstCbct}"></option>
+                            <option value="是" th:selected="${firstmedical?.firstCbct=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.firstCbct=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否拍初诊小牙片</label>
+                    <div class="layui-input-block">
+<!--                       <input type="text" name="profession" th:value="${patientBasicInf?.profession}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="firstApicalXray" lay-verify="required">
+                            <option th:value="${firstmedical?.firstApicalXray}"></option>
+                            <option value="是" th:selected="${firstmedical?.firstApicalXray=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.firstApicalXray=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否取初诊印模</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" name="address" th:value="${patientBasicInf?.address}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="firstImpression" lay-verify="required">
+                            <option th:value="${firstmedical?.firstImpression}"></option>
+                            <option value="是" th:selected="${firstmedical?.firstImpression=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.firstImpression=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">缺失牙位</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="patientMissingTooth" th:value="${firstmedical?.patientMissingTooth}" lay-verify="required" placeholder="缺失牙位" autocomplete="off" class="layui-input" maxlength="18">
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否口扫</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" name="incunabulum" th:value="${patientBasicInf?.incunabulum}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="patientOralScanning" lay-verify="required">
+                            <option th:value="${firstmedical?.patientOralScanning}"></option>
+                            <option value="是" th:selected="${firstmedical?.patientOralScanning=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.patientOralScanning=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否面扫</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" name="patientdoctor" th:value="${patientBasicInf?.patientdoctor}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="patientMaxillofacialScanning" lay-verify="required">
+                            <option th:value="${firstmedical?.patientMaxillofacialScanning}"></option>
+                            <option value="是" th:selected="${firstmedical?.patientMaxillofacialScanning=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.patientMaxillofacialScanning=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">是否电子面弓</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" name="patientdoctor" th:value="${patientBasicInf?.patientdoctor}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+                        <select name="patientElectronicFacebow" lay-verify="required">
+                            <option th:value="${firstmedical?.patientElectronicFacebow}"></option>
+                            <option value="是" th:selected="${firstmedical?.patientElectronicFacebow=='是'}">是</option>
+                            <option value="否" th:selected="${firstmedical?.patientElectronicFacebow=='否'}">否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item align-input">
+                    <label class="layui-form-label">病历</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="firstMedicalRecord" th:value="${firstmedical?.firstMedicalRecord}" placeholder="病历" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+
+                <div class="layui-form-item" >
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+        // 设置出生年月输入框的laydate
+        laydate.render({
+            elem: '#birthdate-input',
+            type: 'date',
+            trigger: 'click',  // 设置触发方式为点击文本
+            //theme: '#393d49'
+            // 如果需要，可以添加更多选项
+        });
+    });
+</script>
+
+
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        // 监听提交按钮的点击事件
+        form.on('submit(patientEditBasic)', function (data) {
+            // 阻止表单的默认提交行为
+            var event = window.event || arguments.callee.caller.arguments[0];
+            event.preventDefault();
+
+            var formData = data.field;
+
+            $.ajax({
+                url: '/patientManagement/patientFirstmedicalEdit',
+                type: 'POST',
+                data: formData,
+                success: function (str) {
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>
+

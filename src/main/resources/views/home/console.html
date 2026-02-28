@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>layuiAdmin 控制台主页一</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md8">
+        <div class="layui-row layui-col-space15">
+          <div class="layui-col-md6">
+            <div class="layui-card">
+              <div class="layui-card-header">快捷方式</div>
+              <div class="layui-card-body">
+                
+                <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+                  <div carousel-item>
+                    <ul class="layui-row layui-col-space10">
+                      <li class="layui-col-xs3">
+                        <a lay-href="/patientManagement">
+                          <i class="layui-icon layui-icon-user"></i>
+                          <cite>患者档案</cite>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs3">
+                        <a lay-href="/patientManagement/patientAppointment">
+                          <i class="layui-icon layui-icon-date"></i>
+                          <cite>患者预约</cite>
+                        </a>
+                      </li>
+                        <li class="layui-col-xs3">
+                            <a href="https://docs.qq.com/sheet/DQXFMd2tESUlPSEVP?tab=qwq0z1" target="_blank">
+                                <i class="layui-icon layui-icon-form"></i>
+                                <cite>存档患者</cite>
+                            </a>
+                        </li>
+                        <li class="layui-col-xs3">
+                            <a>
+                                <i class="layui-icon layui-icon-dialogue"></i>
+                                <cite>交流平台</cite>
+                            </a>
+                        </li>
+                      <li class="layui-col-xs3">
+                        <a lay-href="/doctor">
+                          <i class="layui-icon layui-icon-group"></i>
+                          <cite>医生管理</cite>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs3">
+                        <a>
+                          <i class="layui-icon layui-icon-find-fill"></i>
+                          <cite>智能决策</cite>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs3">
+                        <a lay-href="/scientific/clinical">
+                          <i class="layui-icon layui-icon-chart-screen"></i>
+                          <cite>临床研究</cite>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs3">
+                        <a lay-href="/scientific/basic">
+                          <i class="layui-icon layui-icon-template-1"></i>
+                          <cite>基础研究</cite>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          <div class="layui-col-md6">
+            <div class="layui-card">
+              <div class="layui-card-header">待办事项</div>
+              <div class="layui-card-body">
+
+                <div class="layui-carousel layadmin-carousel layadmin-backlog">
+                  <div carousel-item>
+                    <ul class="layui-row layui-col-space10">
+                      <li class="layui-col-xs6">
+                        <a  class="layadmin-backlog-body">
+                          <h3>待办事项1</h3>
+                          <p><cite>66</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6">
+                        <a class="layadmin-backlog-body">
+                          <h3>待办事项2</h3>
+                          <p><cite>12</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6">
+                        <a  class="layadmin-backlog-body">
+                          <h3>待办事项3</h3>
+                          <p><cite>99</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6">
+                        <a  class="layadmin-backlog-body">
+                          <h3>待办事项4</h3>
+                          <p><cite>20</cite></p>
+                        </a>
+                      </li>
+                    </ul>
+                    <ul class="layui-row layui-col-space10">
+                      <li class="layui-col-xs6">
+                        <a class="layadmin-backlog-body">
+                          <h3>待办事项5</h3>
+                          <p><cite style="color: #FF5722;">5</cite></p>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layui-col-md12">
+            <div class="layui-card">
+              <div class="layui-card-header">数据概览</div>
+              <div class="layui-card-body">
+                
+                <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">
+                  <div carousel-item id="LAY-index-dataview">
+                    <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                    <!--<div></div>-->
+                    <div></div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            <div class="layui-card">
+              <div class="layui-card-header">分布式方块</div>
+              <div class="layui-card-body">
+              </div>
+            </div>
+
+            <div class="layui-card">
+              <div class="layui-tab layui-tab-brief layadmin-latestData">
+                <ul class="layui-tab-title">
+                  <li class="layui-this">分布式方块</li>
+                  <li>分布式方块</li>
+                </ul>
+                <div class="layui-tab-content">
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+      
+      <div class="layui-col-md4">
+        <div class="layui-card">
+          <div class="layui-card-header">系统信息</div>
+          <div class="layui-card-body layui-text layadmin-version">
+            <table class="layui-table">
+              <colgroup>
+                <col width="100">
+                <col>
+              </colgroup>
+              <tbody>
+                <tr>
+                  <td>系统</td>
+                  <td>口腔种植医生团队管理及规范化带教系统</td>
+                </tr>
+                <tr>
+                  <td>Version</td>
+                  <td>V1.0</td>
+                </tr>
+                <tr>
+                  <td>开发人员</td>
+                  <td>陈泽涛团队 </td>
+                </tr>
+                <tr>
+                  <td>主要特色</td>
+                  <td>团队管理 / 功能集成 / 开放式  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+          <div class="layui-card">
+              <div class="layui-card-header">
+                  系统简介
+                  <i class="layui-icon layui-icon-tips" lay-tips="开发中" lay-offset="5"></i>
+              </div>
+              <div class="layui-card-body layui-text layadmin-text">
+                  <blockquote class="layui-elem-quote">
+                      <p>本系统面向医生团队自身医教研工作管理需求开发，解决团队管理难题，实现医生团队内部高效协作运转，推动疑难杂症诊疗工作、大型科研及教学项目工作的顺利进行。</p>
+                  </blockquote>
+              </div>
+          </div>
+        
+        <div class="layui-card">
+          <div class="layui-card-header">分布式方块</div>
+          <div class="layui-card-body layadmin-takerates">
+
+          </div>
+        </div>
+
+        <div class="layui-card">
+          <div class="layui-card-header">分布式方块</div>
+          <div class="layui-card-body" style="padding: 22px 15px;">
+<!--            <table id="LAY-home-homepage-console"></table>-->
+          </div>
+        </div>
+        
+        <div class="layui-card">
+          <div class="layui-card-header">分布式方块</div>
+          <div class="layui-card-body">
+          </div>
+        </div>
+
+        <div class="layui-card">
+          <div class="layui-card-header">
+            分布式方块
+            <i class="layui-icon layui-icon-tips" lay-tips="要支持的噢" lay-offset="5"></i>
+          </div>
+          <div class="layui-card-body layui-text layadmin-text">
+            <blockquote class="layui-elem-quote">
+            </blockquote>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <script th:src="@{/static/res/layui/layui.js}"></script>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    layui.config({
+      base: /*[[@{/static/res/}]]*/ ''
+    }).use(['index', 'console']);
+    /*]]>*/
+  </script>
+</body>
+</html>
+

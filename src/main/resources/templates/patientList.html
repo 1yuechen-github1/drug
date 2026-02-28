@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>患者信息管理</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+    <script type="text/html" id="indexTpl">
+        {{d.LAY_TABLE_INDEX+1}}
+    </script>
+    <style>
+
+        .layui-btn {
+            background-color: #448aca; /* 深蓝色按钮背景 */
+            color: #fff;
+            border: 1px solid #448aca;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .layui-btn:hover {
+            background-color: #e38d13; /* 橙色按钮背景 */
+            border: 1px solid #e38d13;
+        }
+
+        .icon-text {
+            margin-left: 5px;
+            vertical-align: middle;
+            font-size: 14px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+<!--                <div class="layui-card-header">患者信息列表</div>-->
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="main-table" lay-filter="main-table"></table>
+                    <script type="text/html" id="toolbarDemo">
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <span class="layui-btn layui-btn-sm" lay-event="add">
+                            <i class="layui-icon">&#xe654;</i><span class="icon-text">患者建档</span>
+                            </span>
+                        </div>
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <input class="layui-input" name="patientname" id="parambyname" placeholder="根据患者姓名查询" autocomplete="off"
+                                   onkeydown="if(event.keyCode==13){layui.table.reload('table-load',{where:{patientname:this.value}});$('#parambyname').val(patientname);}">
+                        </div>
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <span class="layui-btn layui-btn-sm " lay-event="querySearchbyname">
+                            <i class="layui-icon">&#xe615;</i><span class="icon-text">查询1</span>
+                            </span>
+                        </div>
+
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <input class="layui-input" name="idcard" id="parambyidcard" placeholder="根据患者身份证号查询" autocomplete="off"
+                                   onkeydown="if(event.keyCode==13){layui.table.reload('table-load',{where:{idcard:this.value}});$('#parambyidcard').val(idcard);}">
+                        </div>
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <span class="layui-btn layui-btn-sm " lay-event="querySearchbyidcard">
+                            <i class="layui-icon">&#xe615;</i><span class="icon-text">查询2</span>
+                            </span>
+                        </div>
+                    </script>
+
+                    <script type="text/html" id="barDemo">
+<!--                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+                        <a class="layui-btn layui-btn-xs" lay-event="select">查看</a>
+
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+    layui.use(['table','form'],function () {
+        var $ = layui.$;
+        var table = layui.table;
+        table.render({
+            elem: '#main-table',
+            height: 850,
+            url: '/patientManagement/patientQueryPage',
+            method: 'POST',
+            page: true,
+            limit: 18, // 修改默认条数为18
+            limits: [10, 18, 30, 40, 50],
+            id: 'table-load',
+            toolbar: '#toolbarDemo',
+            cols: [
+                [
+                    {title: '序号', templet: '#indexTpl', width: 60, align: 'center'},
+                    {field: 'patientname', title: '患者姓名', align: 'center', width: 200},
+                    {field: 'idcard', title: '患者身份证', align: 'center', width: 200},
+                    {field: 'sex', title: '患者性别', align: 'center', width: 200},
+                    {field: 'birthday', title: '患者出生年月', align: 'center', width: 200},
+                    {field: 'hospitalcode', title: '患者医院代码', align: 'center', width: 200},
+                    {field: 'patientdoctor', title: '负责医生', align: 'center', width: 200},
+                    {field: 'patientlabel', title: '特殊患者标签', align: 'center', width: 200},
+                    {title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right'}
+                ]
+            ]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(main-table)',function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        title: '患者建档',
+                        content: '/patientManagement/patientArchiving',
+                        shade:[0.8,'#393d49'],
+                        area:['600px','700px'],
+                        btn:['确定','取消'],
+                        yes:function (index,layero) {
+                            var iframeWindow = window['layui-layer-iframe'+index];
+                            var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                            //监听提交
+                            iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                                var field = data.field;
+                                $.ajax({
+                                    url: '/patientManagement/patientAdd',
+                                    data: field,
+                                    async: false,
+                                    cache: false,
+                                    success: function (str) {
+                                        if(str.code === 0){
+                                            table.reload('table-load');
+                                        }
+                                        layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                                    }
+                                });
+                                layer.close(index);     //关闭弹层
+                            });
+                            submit.trigger('click');
+                        },
+                        success:function (layero,index) {
+
+                        }
+                    });
+                    break;
+                case 'querySearchbyname':
+                    var param = $('#parambyname').val();
+                    table.reload('table-load',{
+                        where: {
+                            patientname: param
+                        }
+                    });
+                    $('#parambyname').val(param);
+                    break;
+                case 'querySearchbyidcard':
+                    var param = $('#parambyidcard').val();
+                    table.reload('table-load',{
+                        where: {
+                            idcard: param
+                        }
+                    });
+                    $('#parambyidcard').val(param);
+                    break;
+            }
+        });
+
+
+        //监听编辑、删除,查询患者问诊记录
+        table.on('tool(main-table)',function (obj) {
+            console.log(obj.data); // 查看当前行的数据对象内容
+            var data = obj.data;
+            switch (obj.event) {
+/*                case 'edit':
+                    var id = data.id;
+                    var url = '/patientManagement/patientEditById?id=' + id;
+                    window.open(url);
+                    break;*/
+                case 'select':
+                    console.log(obj.data); // 查看当前行的数据对象内容
+                    var id = data.id;
+                    var url = '/patientManagement/medicalRecord?id='+id;
+                    // window.open(url);
+                    window.location.href = url;
+                    break;
+                case 'del':
+                    layer.confirm('确认要删除吗？',function (index) {
+                        $.ajax({
+                            url: '/supplier/supplierDelById?id=' +data.id,
+                            data: null,
+                            async: false,
+                            cache: false,
+                            success: function (str) {
+                                table.reload('table-load');
+                                layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            }
+                        });
+                    })
+                    break;
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>
+

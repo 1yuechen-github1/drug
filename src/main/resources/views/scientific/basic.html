@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>患者列表</title>
+    <meta name="renderer" content="webkit">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">
+        </div>
+        <div class="layui-card-body" >
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">课题管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DQnhSR0pSaU5QRmta?tab=mb47yr" target="_blank">1. 科研组课题周报</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DQnhSR0pSaU5QRmta?tab=15wsfv" target="_blank">2. 管理人员分工</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DQnhSR0pSaU5QRmta?tab=5maoej" target="_blank">3. 违规情况通报</a>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">经费管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=kfnsu0" target="_blank">1. 经费管理月报</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=BB08J2" target="_blank">2. 测试登记</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=773z0a" target="_blank">3. 请款登记</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=3ubrc1" target="_blank">4. 公务卡登记</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=u7opj4" target="_blank">5. 大创攀登教改登记</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DU0FLU1pYdnhVSkF6?tab=ojh69m" target="_blank">6. 博后经费登记</a>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">学术规范管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=rfcqqe" target="_blank">1. 课题规范管理月报</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=px97hg" target="_blank">2. 离校毕业生数据交接</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=80115z" target="_blank">3. RDD登记</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=rmcgev" target="_blank">4. 杂志投稿账号密码</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=m8uxbw" target="_blank">5. 图书管理</a><br><br>
+                        <a>6. 伦理:</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=BB08J2" target="_blank">1)大鼠伦理</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=BB08J3" target="_blank">2)人伦理+GCP</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=BB08J4" target="_blank">3)兔伦理</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=nvraex" target="_blank">4)小鼠伦理</a>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">体外实验管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=l1mmgm" target="_blank">1. 体外实验管理月报</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=BB08J2" target="_blank">2. 体外耗材</a><br><br>
+                        <a>3. 试剂:</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=glpxtd" target="_blank">1)PCR试剂    </a><br><br>
+                        &nbsp;&nbsp;<a href=" https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=91v7ks" target="_blank">2)血清        </a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=gd70fz" target="_blank">3)抗体			</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=qmgt8g" target="_blank">4)细胞因子		</a><br><br>
+                        &nbsp;&nbsp;<a href=" https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=p0dmru" target="_blank">5)免疫荧光试剂</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=ipt1iv" target="_blank">6)primer总表</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=yd4tlp" target="_blank">7)Elisa试剂	</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=uhbmuw" target="_blank">8)化学试剂		</a><br><br>
+                        &nbsp;&nbsp;<a href="https://docs.qq.com/sheet/DUVhUbG5GTEtheVJG?tab=8mhjir" target="_blank">9)特殊试剂		</a>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">体内实验管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=qykg8n" target="_blank">1. 体内实验管理月报    </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=BB08J2" target="_blank">2. 动物实验出入记事        </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=72g2b7" target="_blank">3. 体内器械借还登记       </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=99h8wr" target="_blank">4. 体内实验预算统计       </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=a6ysy3" target="_blank">5. 体内耗材登记表	       </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=rwzfuc" target="_blank">6. 体内样品登记表	      </a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTmFwZGFoV1NlVVJo?tab=d7l685" target="_blank">7. 刀片使用登记表	        </a>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <div class="layui-colla-title">设备管理</div>
+                    <div class="layui-colla-content">
+                        <a href="https://docs.qq.com/sheet/DUHFUbGptb2dsZkVG?tab=BB08J2" target="_blank">1. 服务器预约使用排班表</a><br><br>
+                        <a href="https://docs.qq.com/sheet/DTkRmQnZmZklDSGpn?tab=xfi1eb" target="_blank">2. 硬盘管理</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+</body>
+</html>

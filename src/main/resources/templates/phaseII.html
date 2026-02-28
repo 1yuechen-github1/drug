@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>基本信息</title>
+  <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+  <style>
+    .align-input {
+      display: flex;
+      align-items: center;
+    }
+    .align-input .layui-form-label {
+      flex: 0 0 180px; /* 设置标签宽度 */
+      text-align: -moz-center; /* 将标签内容对齐 */
+    }
+    .align-input .layui-input-block {
+      flex: 1; /* 让输入框占据剩余的空间 */
+      margin-left: 0px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form layui-form-pane" action="">
+        <input name="id" id="id-input" class="layui-input layui-hide" th:value="${phaseii?.id}"/>
+          <input name="medicalRecordId" id="id-input2" class="layui-input layui-hide" th:value="${phaseii?.medicalRecordId}"/>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">就诊记录</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiRecord" th:value="${phaseii?.iiRecord}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" maxlength="18">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">牙位</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiTooth" th:value="${phaseii?.iiTooth}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">日期</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiDate" th:value="${phaseii?.iiDate}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否进行2期手术</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="hospitalcode" th:value="${patientBasicInf?.hospitalcode}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="iiSurgery" lay-verify="required">
+              <option th:value="${phaseii?.iiSurgery}"></option>
+                <option value="是" th:selected="${phaseii?.iiSurgery}">是</option>
+                <option value="否" th:selected="${phaseii?.iiSurgery}">否</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">口腔卫生情况</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiOralHygiene" th:value="${phaseii?.iiOralHygiene}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">种植位点牙龈情况</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiGingivalCondition" th:value="${phaseii?.iiGingivalCondition}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">种植体周围阴影情况</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiShadow" th:value="${phaseii?.iiShadow}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">种植体颈部骨质吸收</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiBoneResorption" th:value="${phaseii?.iiBoneResorption}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">愈合基台型号</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiHealingAbutmentType" th:value="${phaseii?.iiHealingAbutmentType}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">愈合基台直径</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiHealingAbutmentDiameter" th:value="${phaseii?.iiHealingAbutmentDiameter}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">愈合基台穿龈高度</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiHealingAbutmentLength" th:value="${phaseii?.iiHealingAbutmentLength}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍2期CBCT</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="ii_cbct" th:value="${phase_ii?.ii_cbct}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="iiCBCT" lay-verify="required">
+              <option th:value="${phaseii?.iiCBCT}"></option>
+                <option value="是" th:selected="${phaseii?.iiCBCT}">是</option>
+                <option value="否" th:selected="${phaseii?.iiCBCT}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍2期小牙片</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="ii_apical_xray" th:value="${phase_ii?.ii_apical_xray}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="iiApicalXray" lay-verify="required">
+              <option th:value="${phaseii?.iiApicalXray}"></option>
+                <option value="是" th:selected="${phaseii?.iiApicalXray}">是</option>
+                <option value="否" th:selected="${phaseii?.iiApicalXray}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍2期全景片</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="ii_panoramic_xray" th:value="${phase_ii?.ii_panoramic_xray}" placeholder="" autocomplete="off" class="layui-input">-->
+            <select name="iiPanoramicXray" lay-verify="required">
+              <option th:value="${phaseii?.iiPanoramicXray}"></option>
+                <option value="是" th:selected="${phaseii?.iiPanoramicXray}">是</option>
+                <option value="否" th:selected="${phaseii?.iiPanoramicXray}">否</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">临床照片（多张）</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiClinicalPhoto" th:value="${phaseii?.iiClinicalPhoto}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">病历</label>
+          <div class="layui-input-block">
+            <input type="text" name="iiMedicalRecord" th:value="${phaseii?.iiMedicalRecord}" placeholder="病历" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+  });
+</script>
+
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      var formData = data.field;
+      $.ajax({
+        url: '/patientManagement/patientPhaseIIEdit',
+        type: 'POST',
+        data: formData,
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        }
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>
+

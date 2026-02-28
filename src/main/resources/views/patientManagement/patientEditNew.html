@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" >
+<head>
+  <meta charset="utf-8">
+  <title>搜索</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/res/style/template.css}" media="all">
+
+  <style>
+
+  </style>
+
+</head>
+<body>
+
+  <div class="layui-fluid" >
+    <div class="layadmin-caller">
+      <div class="layui-tab layui-tab-brief caller-tab" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+          <li class="layui-this">基本信息</li>
+          <li>初诊</li>
+          <li>谈方案</li>
+          <li>种植1期</li>
+          <li>种植2期</li>
+          <li>取模</li>
+          <li>过渡义齿</li>
+          <li>戴牙</li>
+          <li>戴牙后复诊</li>
+            <li>其他</li>
+<!--          <li>软硬组织库</li>-->
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+<!--            TODO: 改为附带患者id-->
+            <iframe th:src="@{'/patientManagement/patientEdit/basicInf?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/firstMedical?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/plan?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/phaseI?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/phaseII?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/impression?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/transit?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/crown?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/subsequent?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+            <div class="layui-tab-item">
+                <iframe th:src="@{'/patientManagement/patientEdit/other?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+            </div>
+          <div class="layui-tab-item">
+            <iframe th:src="@{'/patientManagement/patientEdit/patientindex?patientId=' + ${patientId}}" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script th:src="@{/static/res/layui/layui.js}"></script>
+  <script>
+    layui.use(['element'], function () {
+      var element = layui.element;
+
+      // 监听选项卡点击事件
+      element.on('tab(docDemoTabBrief)', function(data){
+        var tabIndex = data.index;
+        $('.layui-tab-content > .layui-tab-item').removeClass('layui-show');
+        $('.layui-tab-content > .layui-tab-item:eq(' + tabIndex + ')').addClass('layui-show');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+
+    <style>
+        /* 设置背景颜色为白色 */
+        body {
+            background-color: white;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="layui-container">
+    <button id="addTable1" class="layui-btn">
+        <i>+</i> <!-- 添加图标 -->
+    </button>
+    <div id="tablesContainer1"></div>
+</div>
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    jQuery(document).ready(function($) {
+        //一级+按钮点击事件
+        $("#addTable1").click(function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            // 处理 "addTable1" 按钮的点击事件
+            var tableStructure = `
+            <!-- 添加一级表格的代码 -->
+<!--深色分割线-->
+<hr class="layui-border-black">
+        <div class="layui-card">
+            <div class="layui-card-body" style="padding: 15px;">
+                <form class="layui-form" action="" lay-filter="component-form-group"     >
+                    <div class="layui-form-item" style="padding-left: 30px">
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                日期
+                            </div>
+                            <input type="text"   placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" >
+                        <label class="layui-form-label">交班记录</label>
+                        <div class="layui-input-block">
+                            <textarea    lay-verify="required" placeholder="" autocomplete="off" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-container">
+                        <span style="padding-left: 40px"></span>
+                        <button id="zhongzhi" class="layui-btn layui-btn-primary layui-btn-xs">
+                            <i>种植 +</i> <!-- 添加图标 -->
+                        </button>
+                        <button id="zhigu" class="layui-btn layui-btn-primary layui-btn-xs">
+                            <i>植骨 +</i> <!-- 添加图标 -->
+                        </button>
+                        <button id="chongxi" class="layui-btn layui-btn-primary layui-btn-xs">
+                            <i>冲洗 +</i> <!-- 添加图标 -->
+                        </button>
+                        <button id="chaixian" class="layui-btn layui-btn-primary layui-btn-xs">
+                            <i>拆线 +</i> <!-- 添加图标 -->
+                        </button>
+
+                        <div id="tablesContainer2"></div>
+                        <div class="layui-form-item" style="margin-top: 10px">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        `;
+            // 将表格结构追加到 "tablesContainer1"
+            $("#tablesContainer1").append(tableStructure);
+
+            layui.use('laydate', function() {
+                var laydate = layui.laydate;
+                var form = layui.form;
+                var layer = layui.layer;
+
+                // 设置出生年月输入框的laydate
+                laydate.render({
+                    elem: '#birthdate-input',
+                    type: 'date',
+                    trigger: 'click',  // 设置触发方式为点击文本
+                });
+            });
+        });
+
+        // 为新添加的二级种植按钮添加点击事件处理程序
+        $("#tablesContainer1").on("click", "#zhongzhi", function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+        <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">种植表单</div>
+            <div class="layui-card-body">
+                <table class="layui-table"  id="zhongzhi">
+            <tbody>
+                <tr>
+                    <td style="height: 10px">
+                        <strong style="color: black">种植体信息:</strong>
+                    </td>
+                            <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段4:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段5:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                                <tr>
+                    <td style="height: 10px">
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段4:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段5:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                                <tr>
+                    <td style="height: 10px">
+                        <strong style="color: black">愈合信息:</strong>
+                    </td>
+                            <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+        <td></td> <!-- 空白的 <td> 元素，以保持长度相同 -->
+                </tr>
+                                <tr>
+                    <td style="height: 10px">
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段4:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段5:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                                <tr>
+                    <td style="height: 10px">
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段4:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    字段5:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            </div>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+        });
+        // 为新添加的二级植骨按钮添加点击事件处理程序
+        $("#tablesContainer1").on("click", "#zhigu", function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+        <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">植骨表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px" id="zhongzhi">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段4:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段5:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段6:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    植骨字段7:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+        });
+        // 为新添加的二级冲洗按钮添加点击事件处理程序
+        $("#tablesContainer1").on("click", "#chongxi", function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+                <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">冲洗表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px" id="zhongzhi">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    冲洗牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    冲洗字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    冲洗字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    冲洗字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+        });
+        // 为新添加的二级拆线按钮添加点击事件处理程序
+        $("#tablesContainer1").on("click", "#chaixian", function (e) {
+            e.preventDefault(); // 阻止按钮的默认行为
+            // 处理 "二级 +" 按钮的点击事件
+            var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+                <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">拆线表单</div>
+            <div class="layui-card-body">
+        <table class="layui-table" style="padding-left: 30px" id="zhongzhi">
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    拆线牙位:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    拆线字段1:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    拆线字段2:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    拆线字段3:
+                                </div>
+                                <input type="text" name="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        `;
+            // 将二级表格结构追加到与点击的按钮相对应的容器
+            $(this).parent().find("#tablesContainer2").append(tableStructure);
+        });
+    });
+</script>
+</body>
+</html>
+

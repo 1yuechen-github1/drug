@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>基本信息</title>
+  <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+  <style>
+    .align-input {
+      display: flex;
+      align-items: center;
+    }
+    .align-input .layui-form-label {
+      flex: 0 0 180px; /* 设置标签宽度 */
+      text-align: -moz-center; /* 将标签内容对齐 */
+    }
+    .align-input .layui-input-block {
+      flex: 1; /* 让输入框占据剩余的空间 */
+      margin-left: 0px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form layui-form-pane" action="">
+        <input name="id" id="id-input" class="layui-input layui-hide" th:value="${impression?.id}"/>
+          <input name="medicalRecordId" id="id-input2" class="layui-input layui-hide" th:value="${impression?.medicalRecordId}"/>
+          <div class="layui-form-item  align-input">
+
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">就诊记录</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionRecord" th:value="${impression?.impressionRecord}" lay-verify="required" placeholder="就诊记录" autocomplete="off" class="layui-input" maxlength="18">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">取模方式</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionMethod" th:value="${impression?.impressionMethod}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">日期</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionDate" th:value="${impression?.impressionDate}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否多牙取模</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="impression_multitooth" th:value="${impression?.impression_multitooth}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">-->
+              <select name="impressionMultitooth" lay-verify="required">
+                  <option th:value="${impression?.impressionMultitooth}"></option>
+                  <option value="是" th:selected="${impression?.impressionMultitooth == '是'}">是</option>
+                  <option value="否" th:selected="${impression?.impressionMultitooth == '否'}">否</option>
+              </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">比色色号</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionColorimetry" th:value="${impression?.impressionColorimetry}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">伤口愈合情况</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionHealingCondition" th:value="${impression?.impressionHealingCondition}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">数字化取模</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionOralScanning" th:value="${impression?.impressionOralScanning}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模CBCT</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="impression_cbct" th:value="${impression?.impression_cbct}" placeholder="" autocomplete="off" class="layui-input">-->
+              <select name="impressionCBCT" lay-verify="required">
+                  <option th:value="${impression?.impressionCBCT}"></option>
+                  <option value="是" th:selected="${impression?.impressionCBCT == '是'}">是</option>
+                  <option value="否" th:selected="${impression?.impressionCBCT == '否'}">否</option>
+              </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模小牙片</label>
+          <div class="layui-input-block">
+              <select name="impressionApicalXray" lay-verify="required">
+                  <option th:value="${impression?.impressionApicalXray}"></option>
+                  <option value="是" th:selected="${impression?.impressionApicalXray == '是'}">是</option>
+                  <option value="否" th:selected="${impression?.impressionApicalXray == '否'}">否</option>
+              </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否拍取模全景片</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="impression_panoramic_xray" th:value="${impression?.impression_panoramic_xray}" placeholder="" autocomplete="off" class="layui-input">-->
+              <select name="impressionPanoramicXray" lay-verify="required">
+                  <option th:value="${impression?.impressionPanoramicXray}"></option>
+                  <option value="是" th:selected="${impression?.impressionPanoramicXray == '是'}">是</option>
+                  <option value="否" th:selected="${impression?.impressionPanoramicXray == '否'}">否</option>
+              </select>
+          </div>
+        </div>
+
+          <div class="layui-form-item align-input">
+              <label class="layui-form-label">临床照片（多张）</label>
+              <div class="layui-input-block">
+                  <input type="text" name="impressionClinicalPhoto" th:value="${impression?.impressionClinicalPhoto}" placeholder="" autocomplete="off" class="layui-input">
+              </div>
+          </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">病历</label>
+          <div class="layui-input-block">
+            <input type="text" name="impressionMedicalRecord" th:value="${impression?.impressionMedicalRecord}" placeholder="病历" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+  });
+</script>
+
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      var formData = data.field;
+      $.ajax({
+        url: '/patientManagement/patientImpressionEdit',
+        type: 'POST',
+        data: formData,
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        }
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>上前牙模块</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="patientName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">文件名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="fileName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-card-body" >
+            <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-inline" style="margin-right: 10px;">
+            <span class="layui-btn layui-btn-sm" lay-event="add">
+            <i class="layui-icon">&#xe654;</i><span class="icon-text">上传CBCT截图</span>
+            </span>
+                </div>
+            </script>
+
+            <script type="text/html" id="barDemo">
+                <div class="layui-clear-space">
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                </div>
+            </script>
+
+
+        </div>
+    </div>
+</div>
+
+</script>
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<!--查询历史影像处理数据-->
+<script>
+    layui.use(['table','form'],function () {
+        var $ = layui.$;
+        var table = layui.table;
+        var form = layui.form;
+        table.render({
+            elem: '#LAY-user-manage',
+            // url: '/intelligentDecision/upperAnteriorTeethList',
+            data: [
+                { id: 1, patientName: '张三', fileName: 'image1.jpg', Inclination: '10°', wallThickness: '2mm' },
+                { id: 2, patientName: '李四', fileName: 'image2.jpg', Inclination: '15°', wallThickness: '3mm' },
+                { id: 3, patientName: '王五', fileName: 'image3.jpg', Inclination: '12°', wallThickness: '2.5mm' },
+                // 添加更多的静态数据
+            ],
+            // method: 'POST',
+            page: true,
+            limit: 17, // 修改默认条数为18
+            limits: [10, 17, 30, 40, 50],
+            id: 'table-load',
+            toolbar: '#toolbarDemo',
+            cols: [
+                [
+                    {field: 'id', title: 'id', hide: true},
+                    {field: 'patientName', title: '患者姓名', align: 'center', width: 200},
+                    {field: 'fileName', title: 'CBCT截图文件名', align: 'center', width: 200},
+                    {field: 'Inclination', title: '上前牙倾斜度', align: 'center', width: 200},
+                    {field: 'wallThickness', title: '上前牙唇侧骨壁厚度', align: 'center', width: 200},
+                    {title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right',minWidth: 125}
+                ]
+            ],
+        });
+        //监听搜索栏事件
+        //事件-搜索
+        form.on('submit(LAY-user-front-search)', function(data){
+            var field = data.field;
+
+            //执行重载
+            table.reload('table-load', {
+                where: {
+                    patientName: field.patientName,
+                    fileName: field.fileName
+                }
+            });
+        });
+        //监听头工具栏事件
+        table.on('toolbar(LAY-user-manage)',function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        title: '上传CBCT截图',
+                        content: '/intelligentDecision/uploadCBCTScreenshots',
+                        shade:[0.8,'#393d49'],
+                        area: ['30%', '75%'], // 设置宽度和高度为屏幕的80%
+                        btn:['确定','取消'],
+                        maxmin: true,
+                        yes:function (index,layero) {
+                            var iframeWindow = window['layui-layer-iframe'+index];
+                            var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                            //监听提交 TODO:未完善
+                            iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                                var field = data.field;
+                                $.ajax({
+                                    url: '/intelligentDecision/upperAnteriorTeeth/uploadCBCTScreenshots',
+                                    data: field,
+                                    async: false,
+                                    cache: false,
+                                    success: function (str) {
+                                        if(str.code === 0){
+                                            table.reload('table-load');
+                                        }
+                                        layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                                    }
+                                });
+                                layer.close(index);     //关闭弹层
+                            });
+                            submit.trigger('click');
+                        },
+                        success:function (layero,index) {
+
+                        }
+                    });
+                    break;
+                case 'appointment':
+                    var appointmentUrl = '/patientManagement/patientAppointment'; // Replace with the actual URL of the appointment page
+                    $.ajax({
+                        url: appointmentUrl,
+                        success: function (html) {
+                            $('.layui-card').html(html); // Replace the content of the card body with the appointment page content
+                        }
+                    });
+                    break;
+
+            }
+        });
+
+
+        //监听编辑、删除,查询患者问诊记录
+        table.on('tool(LAY-user-manage)',function (obj) {
+            console.log(obj.data); // 查看当前行的数据对象内容
+            var data = obj.data;
+            switch (obj.event) {
+                case 'select':
+                    console.log(obj.data); // 查看当前行的数据对象内容
+                    var id = data.id;
+                    var url = '/patientManagement/patientEditByPatientId?patientId='+id;
+                    // window.open(url);
+                    window.location.href = url;
+                    break;
+                case 'merge':
+                    console.log(obj.data); // 查看当前行的数据对象内容
+                    var id = data.id;
+                    var url = '/patientManagement/patientRecordMerge?patientId='+id;
+                    // window.open(url);
+                    window.location.href = url;
+                    break;
+                case 'del':
+                    layer.confirm('确认要删除吗？',function (index) {
+                        $.ajax({
+                            url: '/supplier/supplierDelById?id=' +data.id,
+                            data: null,
+                            async: false,
+                            cache: false,
+                            success: function (str) {
+                                table.reload('table-load');
+                                layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            }
+                        });
+                    })
+                    break;
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

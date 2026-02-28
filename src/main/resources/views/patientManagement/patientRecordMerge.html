@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>合并就诊记录</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+    <script th:src="@{/static/res/layui/layui.js}"></script>
+    <style>
+
+
+    </style>
+</head>
+<body>
+
+<div id="panels" class="layui-collapse"></div>
+
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+        var panelsContainer = document.getElementById('panels');
+        // var data = [
+        //     {
+        //         id: 1,
+        //         type: "初诊",
+        //         date: "2022-10-16",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 2,
+        //         type: "谈方案",
+        //         date: "2022-10-20",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 3,
+        //         type: "一期_种植+植骨",
+        //         date: "2022-10-25",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 4,
+        //         type: "一期_软组织移植",
+        //         date: "2022-10-30",
+        //         record: "<p>交班记录2</p>\n"
+        //     },
+        //     {
+        //         id: 5,
+        //         type: "二期",
+        //         date: "2022-11-25",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 6,
+        //         type: "取模",
+        //         date: "2022-11-29",
+        //         record: "这是交班记录的内容。"
+        //     },
+        //     {
+        //         id: 7,
+        //         type: "过渡义齿",
+        //         date: "2022-12-2",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 8,
+        //         type: "戴牙",
+        //         date: "2022-12-16",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 9,
+        //         type: "戴牙后复诊",
+        //         date: "2022-12-28",
+        //         record: "<p>交班记录1</p>\n<p><span style=\"color: #e03e2d;\">交班记录1</span></p>\n<p><span style=\"background-color: #e03e2d;\">交班记录1</span></p>\n<p><strong>交班记录1</strong></p>\n<p><span style=\"text-decoration: line-through;\"><span style=\"text-decoration: underline;\"><em>交班记录1</em></span></span></p>\n<p>&nbsp;</p>"
+        //     },
+        //     {
+        //         id: 10,
+        //         type: "初诊",
+        //         date: "2023-10-17",
+        //         record: "交班记录2"
+        //     },
+        //     {
+        //         id: 11,
+        //         type: "谈方案",
+        //         date: "2023-10-21",
+        //         record: "<p>交班记录2</p>\n"
+        //     }
+        // ];
+        layui.use(function (){
+            var $ = layui.$;
+            $.ajax({
+                url: '/patientManagement/allHandoverRecord' + "?patientId=" + [[${patientId}]],
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data['data']);
+
+                    data['data'].forEach(function(item) {
+                        var stageMap = {
+                            "firstMedical": "初诊",
+                            "plan": "谈方案",
+                            "phaseI": "种植一期",
+                            "PhaseII": "种植二期",
+                            "impression": "取模",
+                            "transit": "过渡义齿",
+                            "crown": "戴牙",
+                            "subsequent": "戴牙后复诊",
+                            "other": "其他"
+                        };
+                        var stageCN = stageMap[item.stage];
+                        var title = item.recordDate + ' ' + stageCN;
+                        var content = item.record;
+
+                        var panel = document.createElement('div');
+                        panel.className = 'layui-colla-item';
+
+
+                        var panelTitle = document.createElement('h2');
+                        panelTitle.className = 'layui-colla-title right-align';
+                        panelTitle.style.display = 'flex';
+                        panelTitle.style.alignItems = 'center';
+                        panelTitle.style.justifyContent = 'space-between';
+
+                        // 创建标题文本
+                        var titleText = document.createElement('span');
+                        titleText.textContent = title;
+                        titleText.className = 'title-text';
+
+                        // 创建跳转按钮
+                        var jumpButton = document.createElement('a');
+                        jumpButton.href = 'javascript:void(0);'; // 设置为javascript:void(0);来阻止默认链接跳转
+                        jumpButton.textContent = '跳转';
+                        jumpButton.className = 'layui-btn layui-btn-sm'
+
+                        // 添加点击事件监听器
+                        jumpButton.addEventListener('click', function() {
+                            // 获取时间和阶段，这里使用正则表达式来提取
+                            var date = item.recordDate;
+                            var type = item.stage;
+
+                            // 根据时间和阶段进行跳转逻辑
+                            handleJump(date, type);
+                        });
+
+                        // 将标题文本和跳转按钮添加到标题中
+                        panelTitle.appendChild(titleText);
+                        panelTitle.appendChild(jumpButton);
+
+                        var panelContent = document.createElement('div');
+                        panelContent.className = 'layui-colla-content';
+                        panelContent.innerHTML = content;
+
+                        panel.appendChild(panelTitle);
+                        panel.appendChild(panelContent);
+                        panelsContainer.appendChild(panel);
+                    });
+
+                    // 渲染折叠面板
+                    element.render('collapse');
+
+                    // 处理跳转逻辑的函数
+                    function handleJump(date, type) {
+                        // 根据date和type执行跳转逻辑
+                        if (date && type) {
+                            var targetURL = '/patientManagement/patientEdit/' + type;
+                            targetURL += '?patientId=' + [[${patientId}]];
+                            targetURL += '&recordDate=' + date;
+                            window.location.href = targetURL;
+                                // '/patientManagement/patientEdit/' + type + '?patientId=' + [[${patientId}]];
+                            // 示例：跳转到对应页面的对应时间部分并自动展开
+                            // 在这里，你需要编写具体的跳转代码，例如使用锚点或其他方式跳转到指定页面的指定部分
+                        }
+                    }
+
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+        // var panelsContainer = document.getElementById('panels');
+        //
+        // data.forEach(function(item) {
+        //     var title = item.date + ' ' + item.type;
+        //     var content = item.record;
+        //
+        //     var panel = document.createElement('div');
+        //     panel.className = 'layui-colla-item';
+        //
+        //     var panelTitle = document.createElement('h2');
+        //     panelTitle.className = 'layui-colla-title right-align';
+        //
+        //     // 创建标题文本
+        //     var titleText = document.createElement('span');
+        //     titleText.textContent = title;
+        //     titleText.className = 'title-text';
+        //
+        //     // 创建跳转按钮
+        //     var jumpButton = document.createElement('a');
+        //     jumpButton.href = 'javascript:void(0);'; // 设置为javascript:void(0);来阻止默认链接跳转
+        //     jumpButton.textContent = '跳转';
+        //
+        //     // 添加点击事件监听器
+        //     jumpButton.addEventListener('click', function() {
+        //         // 获取时间和阶段，这里使用正则表达式来提取
+        //         var date = item.date;
+        //         var type = item.type;
+        //
+        //         // 根据时间和阶段进行跳转逻辑
+        //         handleJump(date, type);
+        //     });
+        //
+        //     // 将标题文本和跳转按钮添加到标题中
+        //     panelTitle.appendChild(titleText);
+        //     panelTitle.appendChild(jumpButton);
+        //
+        //     var panelContent = document.createElement('div');
+        //     panelContent.className = 'layui-colla-content';
+        //     panelContent.innerHTML = content;
+        //
+        //     panel.appendChild(panelTitle);
+        //     panel.appendChild(panelContent);
+        //     panelsContainer.appendChild(panel);
+        // });
+        //
+        // // 渲染折叠面板
+        // element.render('collapse');
+        //
+        // // 处理跳转逻辑的函数
+        // function handleJump(date, type) {
+        //     // 根据date和type执行跳转逻辑
+        //     if (date && type) {
+        //         // 示例：跳转到对应页面的对应时间部分并自动展开
+        //         // 在这里，你需要编写具体的跳转代码，例如使用锚点或其他方式跳转到指定页面的指定部分
+        //     }
+        // }
+    });
+</script>
+
+</body>
+</html>

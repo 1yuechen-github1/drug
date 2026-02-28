@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<head>
+    <meta charset="UTF-8">
+    <title>文件管理系统</title>
+    <style>
+        .content {
+            width: 80%;
+            margin: 10px auto;
+        }
+
+        .td_style {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<div class="content panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">文件上传下载</h3>
+    </div>
+    <div class="panel-body">
+<!--        <div class="form-group">
+            <form method="post" enctype="multipart/form-data" th:action="@{/uploadfile/upload}">
+                <input type="file" name="multipartFile">
+                <input type="submit" style="margin-top:20px" value="点击上传" class="btn btn-primary btn-sm"/>
+            </form>
+        </div>-->
+        <table class="table table-bordered">
+            <tr>
+                <td width="100px">文件名称</td>
+<!--                <td>文件名称</td>-->
+                <td>储存路径</td>
+                <td>文件大小(字节)</td>
+                <td>文件类型</td>
+<!--                <td>上传时间</td>-->
+                <td>操作</td>
+            </tr>
+            <tr th:each="file:${fileList}">
+                <td class="td_style" th:text="${file.oldName}"/>
+<!--                <td th:text="${file.newName}"/>-->
+                <td th:text="${file.urlPath}"/>
+                <td th:text="${file.size}"/>
+                <td th:text="${file.fileType}"/>
+<!--                <td th:text="${#dates.format(file.createdDate,'yyyy-MM-dd-HH:mm:ss')}"/>-->
+                <td>
+                    <a class="btn btn-success" role="button" th:href="@{/uploadfile/download(id=${file.id})}">下载</a>
+                    <a class="btn btn-danger" role="button" th:href="@{/uploadfile/delete(id=${file.id})}">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文件管理系统</title>
+    &lt;!&ndash; 引入 layui 的 CSS 文件 &ndash;&gt;
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h3>文件上传下载</h3>
+        </div>
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <form class="layui-form" method="post" enctype="multipart/form-data" th:action="@{/uploadfile/upload}">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择文件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload-drag" id="upload">
+                                <i class="layui-icon"></i>
+                                <p>点击上传，或将文件拖拽到此处</p>
+                            </div>
+                            <input type="hidden" name="multipartFile" id="upload-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="upload">点击上传</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <table class="layui-table">
+                <colgroup>
+                    <col width="100">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="150">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>文件原名称</th>
+                    <th>文件新名称</th>
+                    <th>储存路径</th>
+                    <th>文件大小(字节)</th>
+                    <th>文件类型</th>
+                    <th>上传时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="file:${fileList}">
+                    <td th:text="${file.oldName}"></td>
+                    <td th:text="${file.newName}"></td>
+                    <td th:text="${file.urlPath}"></td>
+                    <td th:text="${file.size}"></td>
+                    <td th:text="${file.fileType}"></td>
+                    <td th:text="${#dates.format(file.createdDate,'yyyy-MM-dd-HH:mm:ss')}"></td>
+                    <td>
+                        <a class="layui-btn layui-btn-normal layui-btn-sm" th:href="@{/uploadfile/download(id=${file.id})}">下载</a>
+                        <a class="layui-btn layui-btn-danger layui-btn-sm" th:href="@{/uploadfile/delete(id=${file.id})}">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+&lt;!&ndash; 引入 layui 的 JS 文件 &ndash;&gt;
+<script th:src="@{/static/layui/layui.js}"></script>
+
+<script>
+    layui.use(['upload', 'form'], function(){
+        var upload = layui.upload;
+        var form = layui.form;
+
+        // 选择文件后回调
+        upload.render({
+            elem: '#upload',
+            url: '/uploadfile/upload', // 替换成实际的上传接口
+            done: function(res){
+                // 上传完成，可以在这里处理服务器返回的响应
+                console.log(res);
+            },
+            accept: 'file' // 只允许上传文件，不允许上传文件夹
+        });
+    });
+</script>
+</body>
+</html>-->
+
+

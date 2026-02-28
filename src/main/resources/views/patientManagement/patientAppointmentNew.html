@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+    />
+    <title>患者预约板块</title>
+      <meta name="renderer" content="webkit">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+      <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+      <link rel="stylesheet" th:href="@{/static/layui_exts/laydateNote/laydateNote.css}" media="all">
+
+      <style>
+          /* 调整容器高度 */
+          .layui-fluid {
+              height: 80%;
+          }
+      </style>
+
+  </head>
+  <body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <!--预约功能部分-->
+        <div class="layui-col-md6">
+            <!--日历部分-->
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">日历</div>
+                    <div class="layui-card-body">
+                        <div class="layui-inline laydateNote" id="test-n2"></div>
+                    </div>
+                </div>
+            </div>
+            <!--患者列表部分-->
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">预约</div>
+                    <div class="layui-card-body">
+                        <!-- 患者列表内容 -->
+                        <form class="layui-form layui-row layui-col-space16">
+                            <div class="layui-col-md3">
+                                <div class="layui-input-wrap">
+                                    <div class="layui-input-prefix">
+                                        <i class="layui-icon layui-icon-username"></i>
+                                    </div>
+                                    <input type="text" name="patientname" value="" placeholder="患者姓名" class="layui-input" lay-affix="clear">
+                                </div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="layui-input-wrap">
+                                    <input type="text" name="idcard" placeholder="身份证号" lay-affix="clear" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="layui-input-wrap">
+                                    <input type="text" name="birthday"  placeholder="联系电话" lay-affix="clear" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-btn-container layui-col-md3">
+                                <button id="searchBtn" class="layui-btn">Search</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">Clear</button>
+                            </div>
+                        </form>
+                        <table class="layui-hide" id="ID-table-demo-search"></table>
+                        <!--预约备注-->
+                        <div class="layui-row layui-col-space16" style="margin-top: 15px">
+                            <div class="layui-col-md3">
+                                <div class="layui-form-item" >
+                                    <div class="layui-input-group">
+                                        <div class="layui-input-prefix" >
+                                            时间段
+                                        </div>
+                                        <select name="timeSlot">
+                                            <option value="">请选择时间段</option>
+                                            <optgroup label="上午">
+                                                <option value="08:00">08:00</option>
+                                                <option value="08:30">08:30</option>
+                                                <option value="09:00">09:00</option>
+                                                <option value="09:30">09:30</option>
+                                                <option value="10:00">10:00</option>
+                                                <option value="10:30">10:30</option>
+                                                <option value="11:00">11:00</option>
+                                                <option value="11:30">11:30</option>
+                                            </optgroup>
+                                            <optgroup label="下午">
+                                                <option value="14:30">14:30</option>
+                                                <option value="15:00">15:00</option>
+                                                <option value="15:30">15:30</option>
+                                                <option value="16:00">16:00</option>
+                                                <option value="16:30">16:30</option>
+                                                <option value="17:00">17:00</option>
+                                                <option value="17:30">17:30</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="layui-form-item ">
+                                    <div class="layui-input-group">
+                                        <div class="layui-input-prefix">
+                                            预约标签
+                                        </div>
+                                        <select name="appointmentlabel" lay-verify="">
+                                            <option value="">请选择预约标签</option>
+                                            <option value="初诊">初诊</option>
+                                            <option value="谈方案">谈方案</option>
+                                            <option value="1期">1期</option>
+                                            <option value="拆线">拆线</option>
+                                            <option value="冲洗">冲洗</option>
+                                            <option value="2期">2期</option>
+                                            <option value="过渡义齿">过渡义齿</option>
+                                            <option value="取模">取模</option>
+                                            <option value="戴牙">戴牙</option>
+                                            <option value="戴牙后复诊">戴牙后复诊</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <div class="layui-form-item ">
+                                    <div class="layui-input-group">
+                                        <div class="layui-input-prefix">
+                                            预约备注
+                                        </div>
+                                        <input type="text" name="appointmentnote"  placeholder="请输入备注" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item" style="margin-top: 20px;text-align: center;">
+                            <div class="layui-input-block">
+                                <button class="layui-btn"  id="submitBtn">预约</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--查看信息部分-->
+        <div class="layui-col-md6" style="padding: 15px">
+            <div class="layui-card" >
+                <div class="layui-card-header">当日预约信息</div>
+                <div class="layui-card-body">
+                    <!-- 预约内容 -->
+                    <table class="layui-hide" id="appointment-table" lay-filter="appointment-table"></table>
+                    <script type="text/html" id="barDemo">
+                        <div class="layui-clear-space">
+                            <a class="layui-btn layui-btn-xs" lay-event="contact">联系</a>
+                            <a class="layui-btn layui-btn-xs" lay-event="photoUpload">拍照</a>
+<!--                            <input type="file" accept="image/*" capture="camera">-->
+<!--                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+                        </div>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <script th:src="@{/static/res/layui/layui.js}"></script>
+    <script>
+      //调用
+      layui
+        .extend({
+          laydateNote: '/static/layui_exts/laydateNote/laydateNoteES6',
+          artTemplate: '/static/layui_exts/artTemplate/artTemplate'
+        })
+          .use(['laydateNote','table','form'], function() {
+              var $ = layui.$;
+              var table = layui.table;
+              var form = layui.form;
+              var selectedDate;
+              //调用
+              let { laydateNote } = layui
+              laydateNote({
+                  elem: '#test-n2', //容器id,CLass
+                  //url: 'test2.json', //异步数据接口,本地浏览时可不设置
+                  sort: 'up', //日期排序，默认不设置不排序，up 日期升序，down 日期降序
+                  fine: '.laydateNotebook', //开启详细模式
+                  done: function(data, chooseData, type) {
+                      //回调数据，这里发送你的请求ajax
+                      console.log(chooseData.time)
+                      selectedDate = chooseData.time
+                      // 在用户选择日期后重新渲染表格
+                      table.reload('table-load2', {
+                          url: '/patientManagement/patientAppointmentQueryList',
+                          where: {
+                              appointmentdate: chooseData.time // 传递选中的日期到后端
+                          }
+                      });
+                  }
+              })
+
+              //筛选部分表格
+              table.render({
+                  elem: '#ID-table-demo-search',
+                  height: 120,
+                  url: '/patientManagement/patientQueryPage',
+                  method: 'POST',
+                  page: false,
+                  limit: 2, // 修改默认条数为3
+                  id: 'table-load1',
+                  skin:'nob',
+                  cols: [
+                      [
+                          {field: 'id', title: 'id', hide: true},
+                          {type: 'radio', fixed: 'left'},
+                          {field: 'patientname', title: '患者姓名', align: 'center', width: 100},
+                          {field: 'idcard', title: '身份证', align: 'center', width: 200},
+                          {field: 'sex', title: '性别', align: 'center', width: 80},
+                          {field: 'birthday', title: '联系电话', align: 'center', width: 150},
+                          {field: 'hospitalcode', title: '病历号', align: 'center', edit: 'text',width: 100},
+                          {field: 'patientdoctor', title: '负责医生', align: 'center', width: 100},
+                      ]
+                  ],
+              });
+              //筛选部分表格行单击事件( 双击事件为: rowDouble )
+              table.on('row(ID-table-demo-search)', function(obj){
+                  var data = obj.data; // 获取当前行数据
+
+                  // 显示 - 仅用于演示
+                  layer.msg('当前行数据：<br>'+ JSON.stringify(data));
+                  // 标注当前点击行的选中状态
+                  obj.setRowChecked({
+                      type: 'radio' // 单选模式
+                  });
+              });
+              //病历号编辑事件
+              table.on('edit(table-load1)', function(obj){
+                  var field = obj.field //得到字段
+                      ,value = obj.value //得到修改后的值
+                      ,data = obj.data; //得到所在行所有键值
+
+                  var update = {};
+                  update[field] = value;
+                  obj.update(update);
+
+                  // 创建要发送到后端的数据对象
+                  var postData = {
+                      value: value,
+                      id: data.id // 如果需要其他数据也传递到后端，可以在这里添加
+                  };
+
+                  // 发送数据到后端
+                  $.ajax({
+                      url: '/patientManagement/patientEdithospitalcode', // 后端路由的 URL
+                      method: 'POST', // 使用 POST 请求
+                      data: postData, // 发送的数据对象
+                  });
+
+              });
+
+              // 为搜索按钮添加点击事件监听
+              $('#searchBtn').on('click', function(event) {
+                  event.preventDefault(); // 阻止按钮的默认提交行为
+                  // 获取搜索表单数据
+                  var formData = {
+                      patientname: $('input[name=patientname]').val(),
+                      idcard: $('input[name=idcard]').val(),
+                      birthday: $('input[name=birthday]').val()
+                  };
+                  table.reload('table-load1', {
+                      where: {
+                          patientname: formData.patientname,
+                          idcard:formData.idcard,
+                          birthday:formData.birthday,
+                      }
+                  });
+              });
+
+              table.render({
+                  elem: '#appointment-table',
+                  height: 817,
+                  url: '/patientManagement/patientAppointmentQueryList',
+                  method: 'POST',
+                  page: false,
+                  limit: 500,
+                  id: 'table-load2',
+                  skin: 'line',
+                  cols: [
+                      [
+                          {field: 'id', title: 'appointmentid', hide: true},
+                          {field: 'appointmenttime', title: '预约时段', align: 'center', width: 130,sort: true, sortType: 'string'},
+                          {field: 'patientname', title: '患者姓名', align: 'center', width: 100},
+                          {field: 'hospitalcode', title: '病历号', align: 'center', width: 100},
+                          {field: 'birthday', title: '手机号', align: 'center', hide: true,width: 125},
+                          {field: 'patientdoctor', title: '负责医生', align: 'center', width: 100},
+                          {field: 'appointmentlabel', title: '预约标签', align: 'center', width: 100},
+                          {field: 'appointmentnote', title: '预约备注', width: 100,align: 'center',edit: 'text'},
+                          {title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right',minWidth: 125}
+
+                      ]
+                  ],
+                  initSort: { // 设置初始排序
+                      field: 'appointmenttime', // 字段名
+                      type: 'asc' // 升序
+                  },
+              });
+
+              // 预约备注编辑事件
+              table.on('edit(appointment-table)', function(obj){
+                  var field = obj.field //得到字段
+                      ,value = obj.value //得到修改后的值
+                      ,data = obj.data; //得到所在行所有键值
+
+                  var update = {};
+                  update[field] = value;
+                  obj.update(update);
+
+                  // 创建要发送到后端的数据对象
+                  var postData = {
+                      value: value,
+                      id: data.id // 如果需要其他数据也传递到后端，可以在这里添加
+                  };
+
+                  // 发送数据到后端
+                  $.ajax({
+                      url: '/patientManagement/patientEditAppointment', // 后端路由的 URL
+                      method: 'POST', // 使用 POST 请求
+                      data: postData, // 发送的数据对象
+                  });
+
+              });
+              // 监听预约表格表格工具条事件
+              table.on('tool(appointment-table)', function (obj) {
+                  console.log(obj.data); // 查看当前行的数据对象内容
+                  var data = obj.data;
+                  switch (obj.event) {
+                      case 'contact':
+                          var phoneNumber = data.birthday;
+                          console.log(phoneNumber);
+                          window.location.href = 'tel:' + phoneNumber;
+                          break;
+                      case 'photoUpload':
+                          // 获取拍照按钮元素
+                          var photoUploadButton = document.querySelector('a[lay-event="photoUpload"]');
+
+                          // 获取摄像头画面显示元素
+                          var video = document.createElement('video');
+                          video.style.display = 'none';
+                          document.body.appendChild(video);
+
+                          // 获取摄像头权限并在<video>元素中显示摄像头画面
+                          navigator.mediaDevices.getUserMedia({ video: true })
+                              .then(stream => {
+                                  video.srcObject = stream;
+                                  video.play();
+                              })
+                              .catch(error => {
+                                  console.error('获取摄像头权限失败:', error);
+                              });
+
+                          // 在需要拍照时，您可以使用以下代码将当前摄像头画面拍照并处理
+                      function capturePhoto() {
+                          var canvas = document.createElement('canvas');
+                          var context = canvas.getContext('2d');
+                          canvas.width = video.videoWidth;
+                          canvas.height = video.videoHeight;
+                          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                          // 将拍照后的图像保存或进行其他处理
+                          var photoDataUrl = canvas.toDataURL('image/png');
+
+                          // 在这里，您可以将photoDataUrl发送到服务器或进行其他操作
+                          console.log('拍照完成，图像数据URL:', photoDataUrl);
+                      }
+
+                          // 拍照按钮的点击事件处理程序
+                          photoUploadButton.addEventListener('click', function () {
+                              capturePhoto();
+                          });
+
+                          break;
+                  }
+/*                  if (obj.event === 'contact') {
+                      // 获取选中行的数据
+                      var selectedData = obj.data;
+                      if (selectedData.length === 1) {
+                          // 获取选中行的电话号码字段值
+                          var phoneNumber = selectedData.birthday;
+
+                          // 检查电话号码是否有效
+                          if (isValidPhoneNumber(phoneNumber)) {
+                              // 使用 window.location.href 打开电话应用，替换 phoneNumber 为实际的电话号码
+                              window.location.href = 'tel:' + phoneNumber;
+                          } else {
+                              layer.msg('无效的电话号码');
+                          }
+                      }
+                  }*/
+              });
+
+              $('#submitBtn').on('click', function (event) {
+                  event.preventDefault(); // 阻止按钮的默认提交行为
+
+                  // 获取选择的日期
+
+
+                  // 获取选中行的身份证号
+                  var selectedRowData = table.checkStatus('table-load1').data; // 获取选中行数据
+                  var selectedIdCard = selectedRowData[0].idcard; // 提取身份证号
+
+                  // 获取选择的时间段和预约备注
+                  var selectedTimeSlot = $('select[name=timeSlot]').val();
+                  var appointmentlabel = $('select[name=appointmentlabel]').val();
+                  var appointmentNote = $('input[name=appointmentnote]').val();
+
+                  // 构造要发送的数据
+                  var requestData = {
+                      date: selectedDate,
+                      idCard: selectedIdCard,
+                      timeSlot: selectedTimeSlot,
+                      label:appointmentlabel,
+                      note: appointmentNote
+                  };
+                  console.log(requestData)
+
+                  // 发送 Ajax 请求
+                  $.ajax({
+                      type: 'POST',
+                      url: '/patientManagement/addAppointment', // 服务器端接口地址
+                      data: requestData,
+                      success: function (response) {
+                          // 在用户选择日期后重新渲染表格
+                          table.reload('table-load2', {
+                              url: '/patientManagement/patientAppointmentQueryList',
+                              where: {
+                                  appointmentdate: selectedDate // 传递选中的日期到后端
+                              }
+                          });
+                      },
+                      error: function (error) {
+                          console.error('请求错误：', error);
+                      }
+                  });
+              });
+          })
+    </script>
+  </body>
+</html>

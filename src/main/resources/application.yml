@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/drug?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    prefix: classpath:/views
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 512MB
+
+drug:
+  path: D:\项目\口腔团队管理系统\drug_iframe\drug_v1\img\

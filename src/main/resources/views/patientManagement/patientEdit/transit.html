@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>过渡义齿</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+
+  <style>
+    #cardTop {
+      width: 100%; /* 设置卡片宽度为100% */
+      height: 100vh; /* 设置卡片高度为视口高度 */
+      margin: 0; /* 可以移除卡片的外边距，以确保充满整个页面 */
+      padding: 0; /* 可以移除卡片的内边距，以确保充满整个页面 */
+      box-sizing: border-box; /* 让边框和内边距计算在卡片的宽度和高度内 */
+    }
+
+    #form-container {
+      background-color: #ffffff; /* 设置背景颜色为白色 */
+      padding: 20px; /* 可选，添加内边距以增加容器内部的填充 */
+    }
+  </style>
+</head>
+<body>
+<div id="form-container"></div>
+
+<div class="layui-card" id="cardTop">
+  <div class="layui-card-body" style="padding: 15px;">
+    <form class="layui-form" action="" lay-filter="component-form-group"     >
+      <div class="layui-form-item" style="padding-left: 30px">
+        <div class="layui-input-group">
+          <div class="layui-input-prefix" >
+            日期
+          </div>
+          <input type="text"  name="recordDate" lay-verify="required" placeholder="请选择日期" autocomplete="off" class="layui-input" id="birthdate-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item" style="padding-left: 30px">
+        <div class="layui-input-group">
+          <div class="layui-input-prefix" >
+            操作医生
+          </div>
+          <input type="text" name="doctorName" lay-verify="required" placeholder="请输入操作医生" autocomplete="off" class="layui-input" maxlength="18">
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text" >
+        <label class="layui-form-label">交班记录</label>
+        <div class="layui-input-block">
+          <textarea    placeholder="请填写交班记录" autocomplete="off" class="layui-textarea" id="edit"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-container"  style="width: 100%;">
+        <span style="padding-left: 40px"></span>
+        <button id="yawei" class="layui-btn layui-btn-primary layui-btn-sm">
+          <i>牙位 +</i> <!-- 添加图标 -->
+        </button>
+        <div id="tablesContainer2"></div>
+        <div class="layui-form-item" style="margin-top: 10px">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+
+  </div>
+</div>
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--时间渲染器-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+  });
+</script>
+<!--提交按钮事件-->
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      if ( edit.getContent() === '') {
+        layer.msg('交班记录不可为空', {icon: 5});
+        return false;
+      }
+      var transitMessageList = [];
+      for (var i = 1; i <= transitMessageIdx; i++) {
+        transitMessageList.push({
+          tooth: data.field["tooth_" + i],
+          abutmentNumber: data.field["abutmentNumber_" + i],
+          abutmentType: data.field["abutmentType_" + i],
+          abutmentDiameter: data.field["abutmentDiameter_" + i],
+          abutmentHeight: data.field["abutmentHeight_" + i],
+          abutmentConnection: data.field["abutmentConnection_" + i],
+          passivePositioning: data.field["passivePositioning_" + i],
+          occlusalAdjustment: data.field["occlusalAdjustment_" + i]
+        });
+      }
+      // 拼接发送到后端的数据
+      var handoverRecord = {
+        record: edit.getContent(),
+        doctorName: data.field["doctorName"],
+        recordDate: data.field["recordDate"],
+        patientId: [[${patientId}]],
+        stage: "transit",
+        transitMessageList: transitMessageList
+      }
+
+      console.log(JSON.stringify(handoverRecord));
+      $.ajax({
+        url: '/patientManagement/handoverRecordEdit',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(handoverRecord),
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        }
+      });
+    });
+  });
+</script>
+<!--富文本编辑-->
+<script>
+
+  var edit;
+  layui.extend({
+    tinymce: '/static/layui_exts/tinymce/tinymce'
+  }).use(['tinymce', 'util', 'layer'], function () {
+    var t = layui.tinymce
+            , util = layui.util
+            , layer = layui.layer
+            , $ = layui.$
+
+    edit = t.render({
+      elem: "#edit",
+      height: 300,
+      menubar: false, // 禁用菜单栏
+      toolbar:'undo redo | forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright    | link bullist numlist   | formatselect  fontsizeselect',
+      // 其余配置可参考官方文档
+    },function(opt,edit){
+      //加载完成后回调
+    });
+
+
+
+  });
+
+
+</script>
+<!--填写表单按钮事件-->
+<script>
+  var transitMessageIdx = 0;
+  jQuery(document).ready(function($) {
+    // 为新添加的二级种植按钮添加点击事件处理程序
+    $("#yawei").click(function (e)  {
+      e.preventDefault(); // 阻止按钮的默认行为
+      e.stopPropagation(); // 阻止事件传播
+
+      console.log(1);
+      transitMessageIdx++;
+      // 处理 "二级 +" 按钮的点击事件
+      var tableStructure = `
+        <!-- 添加二级表格的代码 -->
+        <div class="layui-card" style="padding-left: 30px">
+            <div class="layui-card-header">牙位表单</div>
+            <div class="layui-card-body">
+                <table class="layui-table">
+            <tbody>
+                <!--基台信息部分-->
+                <tr>
+                    <td style="height: 10px" colspan="4">
+                        基台信息:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    种植牙位:
+                                </div>
+                                <input type="text" name="tooth_${transitMessageIdx}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    基台编号:
+                                </div>
+                                 <input type="text" name="abutmentNumber_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    基台类型:
+                                </div>
+                                <input type="text" name="abutmentType_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    基台直径:
+                                </div>
+                                <input type="text" name="abutmentDiameter_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    基台高度:
+                                </div>
+                                <input type="text" name="abutmentHeight_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    连接类型:
+                                </div>
+                                <input type="text" name="abutmentConnection_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    是否被动就位:
+                                </div>
+                                <select name="passivePositioning_${transitMessageIdx}"  id="passivePositioning">
+                                    <option value="" selected></option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <div class="layui-input-group">
+                                <div class="layui-input-prefix">
+                                    调合:
+                                </div>
+                                <input type="text" name="occlusalAdjustment_${transitMessageIdx}"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+            </div>
+        </div>
+        `;
+      // 将二级表格结构追加到与点击的按钮相对应的容器
+      $(this).parent().find("#tablesContainer2").append(tableStructure);
+
+      layui.use('form', function() {
+        layui.form.render('select'); // 如果有下拉框需要重新渲染
+      });
+    });
+  });
+</script>
+
+<!--动态加载表单-->
+<script>
+  //展开隐藏按钮函数
+  function toggleFormVisibility(formId) {
+    var form = document.getElementById(formId);
+    if (form.style.display === "none" || form.style.display === "") {
+      form.style.display = "block";
+    } else {
+      form.style.display = "none";
+    }
+  }
+
+  // 提交表单的函数
+  function submitForm(formId) {
+    var form = document.getElementById(formId);
+    var editorContent = tinymce.get('record-input' + formId).getContent(); // 获取富文本编辑器的内容
+    var formData = new FormData(form);
+    formData.append('iRecord', editorContent); // 将富文本内容添加到表单数据
+    $.ajax({
+      url: '/patientManagement/patientFirstmedicalEdit',
+      type: 'POST',
+      data: formData,
+      processData: false, // 防止jQuery处理数据
+      contentType: false, // 防止jQuery设置Content-Type
+      success: function (str) {
+        layer.msg(str.msg, { icon: str.icon, anim: str.anim });
+      }
+    });
+  }
+
+  function createForm(data){
+    // 创建主卡片容器
+    var card = document.createElement("div");
+    card.className = "layui-card";
+    card.style.paddingLeft = "30px"; // 使用 style 属性设置样式
+
+    // 卡片标题
+    var cardHeader = document.createElement("div");
+    cardHeader.className = "layui-card-header";
+    cardHeader.textContent = "牙位表单";
+
+    // 卡片主体
+    var cardBody = document.createElement("div");
+    cardBody.className = "layui-card-body";
+
+    // 创建包含表格的主体
+    var table = document.createElement("table");
+    table.className = "layui-table";
+
+    // 表格主体
+    var tbody = document.createElement("tbody");
+
+    // 创建行 1（种植体信息部分）
+    var row1 = document.createElement("tr");
+    var cell11 = document.createElement("td");
+    cell11.colSpan = 4;
+    cell11.textContent = "基台信息:";
+    row1.appendChild(cell11);
+    // 将行添加到表格主体
+    tbody.appendChild(row1);
+
+    // 创建行 2
+    var row2 = document.createElement("tr");
+    var cell21 = document.createElement("td");
+    var div21 = createFormElement("种植牙位:", "tooth", null, data.tooth);
+    cell21.appendChild(div21);
+
+    var cell22 = document.createElement("td");
+    var div22 = createFormElement("基台编号:", "abutmentNumber", null, data.abutmentNumber);
+    cell22.appendChild(div22);
+
+    var cell23 = document.createElement("td");
+    var div23 = createFormElement("基台类型:", "abutmentType", null, data.abutmentType);
+    cell23.appendChild(div23);
+
+    var cell24 = document.createElement("td");
+    var div24 = createFormElement("基台直径:", "abutmentDiameter", null, data.abutmentDiameter);
+    cell24.appendChild(div24);
+
+
+    // 将单元格添加到第2行
+    row2.appendChild(cell21);
+    row2.appendChild(cell22);
+    row2.appendChild(cell23);
+    row2.appendChild(cell24);
+    // 将行添加到表格主体
+    tbody.appendChild(row2);
+
+    // 创建行 4
+    var row4 = document.createElement("tr");
+    var cell41 = document.createElement("td");
+    var div41 = createFormElement("基台高度:", "abutmentHeight", null, data.abutmentHeight);
+    cell41.appendChild(div41);
+
+    var cell42 = document.createElement("td");
+    var div42 = createFormElement("连接类型:", "abutmentConnection", null, data.abutmentConnection);
+    cell42.appendChild(div42);
+
+    var cell43 = document.createElement("td");
+    var div43 = createFormElement("是否被动就位:", "passivePositioning", null, data.passivePositioning);
+    cell43.appendChild(div43);
+
+    var cell44 = document.createElement("td");
+    var div44 = createFormElement("调合:", "occlusalAdjustment", null, data.occlusalAdjustment);
+    cell44.appendChild(div44);
+
+
+    // 将单元格添加到第4行
+    row4.appendChild(cell41);
+    row4.appendChild(cell42);
+    row4.appendChild(cell43);
+    row4.appendChild(cell44);
+    // 将行添加到表格主体
+    tbody.appendChild(row4);
+
+
+
+    // 最后，将表格主体添加到表格中
+    table.appendChild(tbody);
+
+    // 将表格添加到卡片主体
+    cardBody.appendChild(table);
+
+    // 将卡片标题和卡片主体添加到主卡片
+    card.appendChild(cardHeader);
+    card.appendChild(cardBody);
+
+    return card;
+  }
+
+
+  function createFormElement(labelText, name, verify = null, value = "") {
+    var div = document.createElement("div");
+    div.className = "layui-form-item";
+    var inputGroup = document.createElement("div");
+    inputGroup.className = "layui-input-group";
+    var inputPrefix = document.createElement("div");
+    inputPrefix.className = "layui-input-prefix";
+    inputPrefix.textContent = labelText;
+
+    var input = document.createElement("input");
+    input.type = "text";
+    input.name = name;
+    if (verify) {
+      input.setAttribute("lay-verify", verify);
+    }
+    input.placeholder = "";
+    input.setAttribute("autocomplete", "off");
+    input.className = "layui-input";
+    input.value = value; // Set the initial value
+
+    inputGroup.appendChild(inputPrefix);
+    inputGroup.appendChild(input);
+    div.appendChild(inputGroup);
+
+    return div;
+  }
+
+
+
+  function addDynamicForm(data, recordDate) {
+
+
+    var formId = "dynamic-form-" + data.id;
+    // Create a button to show/hide the form
+    var toggleButton = document.createElement("button");
+    toggleButton.textContent = data.recordDate;
+    toggleButton.style.marginLeft = "30px"; // 设置按钮的左外边距为30px
+    toggleButton.style.marginBottom = "15px"; // 设置按钮的左外边距为30px
+    toggleButton.addEventListener("click", function () {
+      toggleFormVisibility(formId);
+    });
+
+    // Append the toggle button to the form-container
+    var formContainer = document.getElementById("form-container");
+    formContainer.appendChild(toggleButton);
+
+    // Create the form div and set its attributes
+    var newForm = document.createElement("div");
+    newForm.id = formId;
+    newForm.style.display = "none"; // Initially hide the form
+    // 如果携带日期参数则显示该日期的交班记录
+    if (recordDate && recordDate == data.recordDate) {
+      newForm.style.display = "block";
+    }
+    // 创建一个新的表单元素
+    //var newForm = document.createElement("form");
+    newForm.classList.add("layui-form"); // 添加Layui的表单类，以便使用Layui的样式和验证
+
+    // 创建深色分割线
+    var separatorLine = document.createElement("hr");
+    separatorLine.classList.add("layui-border-black"); // 添加Layui的深色分割线类
+
+    // 创建输入框：日期
+    var dateInputDiv = document.createElement("div");
+    dateInputDiv.classList.add("layui-input-group", "layui-form-item");
+    dateInputDiv.style.paddingLeft = "30px"; // 设置左侧内边距
+
+    // 创建日期标签的前缀
+    var dateLabelPrefix = document.createElement("div");
+    dateLabelPrefix.classList.add("layui-input-prefix");
+    dateLabelPrefix.textContent = "日期";
+
+    var dateInput = document.createElement("input");
+    dateInput.type = "text";
+    dateInput.name = "recordDate";
+    dateInput.value = data.recordDate;
+    dateInput.id = "birthdate-input";
+    dateInput.classList.add("layui-input");
+    //dateInput.id = "date-input" + data.id; // 使用唯一的ID以区分不同表单项
+    dateInputDiv.appendChild(dateLabelPrefix);
+    dateInputDiv.appendChild(dateInput);
+
+    newForm.appendChild(dateInputDiv);
+
+    // 创建输入框：操作医生
+    var doctorInputDiv = document.createElement("div");
+    doctorInputDiv.classList.add("layui-input-group", "layui-form-item");
+    doctorInputDiv.style.paddingLeft = "30px"; // 设置左侧内边距
+
+    // 创建操作医生标签
+    var doctorPrefix = document.createElement("div");
+    doctorPrefix.classList.add("layui-input-prefix");
+    doctorPrefix.textContent = "操作医生";
+
+    var doctorInput = document.createElement("input");
+    doctorInput.type = "text";
+    doctorInput.name = "doctorName";
+    doctorInput.value = data.doctorName;
+    doctorInput.id = "doctor-input" + data.id;
+    doctorInput.classList.add("layui-input");
+
+    doctorInputDiv.appendChild(doctorPrefix);
+    doctorInputDiv.appendChild(doctorInput);
+
+    newForm.appendChild(doctorInputDiv);
+
+    // 创建文本框：交班记录
+    var recordTextareaDiv = document.createElement("div");
+    recordTextareaDiv.classList.add("layui-form-item");
+
+    var recordTextareaLabel = document.createElement("label");
+    recordTextareaLabel.classList.add("layui-form-label");
+    recordTextareaLabel.textContent = "交班记录";
+    recordTextareaDiv.appendChild(recordTextareaLabel);
+
+    var recordTextareaBlock = document.createElement("div");
+    recordTextareaBlock.classList.add("layui-input-block");
+
+    var recordTextarea = document.createElement("textarea");
+    recordTextarea.name = "record";
+    recordTextarea.value = data.record;
+    recordTextarea.id = "record-input" + data.id;
+    recordTextarea.classList.add("layui-textarea");
+    recordTextareaBlock.appendChild(recordTextarea);
+
+    recordTextareaDiv.appendChild(recordTextareaBlock);
+
+    newForm.appendChild(recordTextareaDiv);
+
+    // 遍历数据并动态生成表单
+    for (var i = 0; i < data.procedures.length; i++) {
+      var Form = createForm(data.procedures[i]);
+      newForm.appendChild(Form);
+    }
+
+    //提交按钮
+    var submitButton = document.createElement("button");
+    submitButton.textContent = "提交";
+    submitButton.classList.add("layui-btn");
+    submitButton.setAttribute("lay-submit", "");
+    submitButton.setAttribute("lay-filter", "submitForm");
+    submitButton.style.marginLeft = "30px"; // 设置按钮的左外边距为30px
+    submitButton.addEventListener("click", function () {
+      submitForm(formId);
+    });
+
+    newForm.appendChild(submitButton);
+
+    //在表单结尾添加分割线
+    newForm.appendChild(separatorLine);
+
+
+    // 最后，将新表单添加到页面中
+    //var formContainer = document.getElementById("form-container");
+    formContainer.appendChild(newForm);
+
+    layui.extend({
+      tinymce: '/static/layui_exts/tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer'], function () {
+      var t = layui.tinymce
+              , util = layui.util
+              , layer = layui.layer
+              , $ = layui.$
+
+      var textareaId = "record-input" + data.id;
+
+      var edit = t.render({
+        elem: "#"+textareaId,
+        height: 300,
+        menubar: false, // 禁用菜单栏
+        toolbar:'undo redo | forecolor backcolor bold italic underline strikethrough | indent2em alignleft aligncenter alignright    | link bullist numlist   | formatselect  fontsizeselect',
+        // 其余配置可参考官方文档
+      },function(opt,edit){
+        //加载完成后回调
+      });
+
+
+
+    });
+
+  }
+
+</script>
+<!--数据部分-->
+<script>
+  layui.use(function (){
+    var $ = layui.$;
+    $.ajax({
+      url: '/patientManagement/handoverRecord' + "?patientId=" + [[${patientId}]] + "&stage=transit",
+      type: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+        var serverData = [];
+        var cnt = 1;
+        data['data'].forEach(function (item) {
+          cnt++;
+          var record = {
+            id: cnt,
+            ...item,
+            procedures: item['transitMessageList']
+          } ;
+          delete record['transitMessageList'];
+
+          serverData.push(record);
+        });
+        // 遍历数据并动态生成表单
+        for (var i = 0; i < serverData.length; i++) {
+          addDynamicForm(serverData[i], '[[${recordDate}]]');
+        }
+      },
+      error: function (error) {
+        console.error(error);
+      }
+    });
+  });
+</script>
+
+
+
+</body>
+</html>
+

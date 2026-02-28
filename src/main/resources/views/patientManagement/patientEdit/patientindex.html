@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>软硬组织库</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+
+    <style>
+        .layui-card {
+            width: 100%; /* 设置卡片宽度为100% */
+            height: 100vh; /* 设置卡片高度为视口高度 */
+            margin: 0; /* 可以移除卡片的外边距，以确保充满整个页面 */
+            padding: 0; /* 可以移除卡片的内边距，以确保充满整个页面 */
+            box-sizing: border-box; /* 让边框和内边距计算在卡片的宽度和高度内 */
+        }
+
+    </style>
+
+</head>
+<body>
+        <div class="layui-card">
+            <div class="layui-card-body" style="padding: 15px;">
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                    <input name="id" id="id-input" class="layui-input layui-hide" th:value="${phase_i?.id}"/>
+                    <input name="medicalRecordId" id="id-input2" class="layui-input layui-hide" th:value="${phase_i?.medicalRecordId}"/>
+                    <div class="layui-form-item" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       交班记录
+                   </div>
+                   <input type="text" name="iRecord" th:value="${phase_i?.iRecord}" lay-verify="required"  placeholder="" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+                    <div class="layui-form-item" >
+               <div class="layui-inline">
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       手术日期
+                   </div>
+                  <input type="text" name="iDate" th:value="${phase_i?.iDate}" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+              </div>
+               </div>
+               <div class="layui-inline">
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       牙位
+                   </div>
+                   <input type="text" name="iTooth" th:value="${phase_i?.iTooth}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+               </div>
+               </div>
+               <div class="layui-inline">
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       骨质类型
+                   </div>
+                   <input type="text" name="iBoneType" th:value="${phase_i?.iBoneType}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+               </div>
+               </div>
+               <div class="layui-inline">
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       牙龈厚度
+                   </div>
+                   <input type="text" name="iGingivaThickness" th:value="${phase_i?.iGingivaThickness}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+               </div>
+               </div>
+          </div>
+<!--           <div class="layui-form-item" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       牙位
+                   </div>
+              <input type="text" name="iTooth" th:value="${phase_i?.iTooth}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+            </div>
+          </div>
+
+
+           <div class="layui-form-item" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       骨质类型
+                   </div>
+            <input type="text" name="iBoneType" th:value="${phase_i?.iBoneType}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+          </div>
+        </div>
+
+           <div class="layui-form-item" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       牙龈厚度
+                   </div>
+            <input type="text" name="iGingivaThickness" th:value="${phase_i?.iGingivaThickness}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>-->
+                    <div class="layui-form-item" >
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       种植体品牌
+                   </div>
+            <input type="text" name="iImplantSystem" th:value="${phase_i?.iImplantSystem}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       种植体型号
+                   </div>
+            <input type="text" name="iImplantType" th:value="${phase_i?.iImplantType}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       种植体直径
+                   </div>
+            <input type="text" name="iImplantDiameter" th:value="${phase_i?.iImplantDiameter}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       种植体长度
+                   </div>
+            <input type="text" name="iImplantLength" th:value="${phase_i?.iImplantLength}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+           <div class="layui-inline" >
+                 <div class="layui-input-group">
+                     <div class="layui-input-prefix" >
+                         植入扭矩
+                     </div>
+                     <input type="text" name="iImplantationTorque" th:value="${phase_i?.iImplantationTorque}" placeholder="" autocomplete="off" class="layui-input">
+                 </div>
+             </div>
+         </div>
+                    <div class="layui-form-item" >
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       愈合方式
+                   </div>
+            <input type="text" name="iHealingMode" th:value="${phase_i?.iHealingMode}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       愈合基台型号
+                   </div>
+            <input type="text" name="iHealingAbutmentType" th:value="${phase_i?.iHealingAbutmentType}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       愈合基台直径
+                   </div>
+          <input type="text" name="iHealingAbutmentDiameter" th:value="${phase_i?.iHealingAbutmentDiameter}" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+           <div class="layui-inline" >
+               <div class="layui-input-group">
+                   <div class="layui-input-prefix" >
+                       愈合基台穿龈高度
+                   </div>
+            <input type="text" name="iHealingAbutmentLength" th:value="${phase_i?.iHealingAbutmentLength}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否植骨
+                            </div>
+                            <input type="text" name="iBoneGrafting" th:value="${phase_i?.iBoneGrafting}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                植骨术式
+                            </div>
+                            <input type="text" name="iGraftingMethod" th:value="${phase_i?.iGraftingMethod}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                植骨量
+                            </div>
+                            <input type="text" name="iGraftingWeight" th:value="${phase_i?.iGraftingWeight}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                植骨材料
+                            </div>
+                            <input type="text" name="iGraftingMaterial" th:value="${phase_i?.iGraftingMaterial}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否使用屏障膜
+                            </div>
+                            <select name="iBarrierMembrane" lay-verify="required">
+                                <option th:value="${phase_i?.iBarrierMembrane}"></option>
+                                <option value="是" th:selected="${phase_i?.iBarrierMembrane}">是</option>
+                                <option value="否" th:selected="${phase_i?.iBarrierMembrane}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                屏障膜厚度
+                            </div>
+                            <input type="text" name="iMembraneLength" th:value="${phase_i?.iMembraneLength}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                屏障膜宽度
+                            </div>
+                            <input type="text" name="iMembraneWidth" th:value="${phase_i?.iMembraneWidth}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                屏障膜品牌
+                            </div>
+                            <input type="text" name="iMembraneSystem" th:value="${phase_i?.iMembraneSystem}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否做即刻修复
+                            </div>
+                            <select name="iImmediateRestoration" lay-verify="required">
+                                <option th:value="${phase_i?.iImmediateRestoration}"></option>
+                                <option value="是" th:selected="${phase_i?.iImmediateRestoration}">是</option>
+                                <option value="否" th:selected="${phase_i?.iImmediateRestoration}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否做数字化导板
+                            </div>
+
+                            <select name="iGuidePlate" lay-verify="required">
+                                <option th:value="${phase_i?.iGuidePlate}"></option>
+                                <option value="是" th:selected="${phase_i?.iGuidePlate}">是</option>
+                                <option value="否" th:selected="${phase_i?.iGuidePlate}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" >
+                    <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板制作公司
+                            </div>
+                            <input type="text" name="iGuidePlateCompany" th:value="${phase_i?.iGuidePlateCompany}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板打印日期
+                            </div>
+                            <input type="text" name="iGuidePlatePrintingDate" th:value="${phase_i?.iGuidePlatePrintingDate}" placeholder="" autocomplete="off" class="layui-input" id = "birthdate-input1">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板使用日期
+                            </div>
+                            <input type="text" name="iGuidePlateUsingDate" th:value="${phase_i?.iGuidePlateUsingDate}" placeholder="" autocomplete="off" class="layui-input" id = "birthdate-input2">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板就位情况
+                            </div>
+                            <input type="text" name="iGuidePlatePosition" th:value="${phase_i?.iGuidePlatePosition}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板协议是否改动
+                            </div>
+                            <input type="text" name="iGuidePlateProtocol" th:value="${phase_i?.iGuidePlateProtocol}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="layui-form-item" >
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板设计类型
+                            </div>
+                            <input type="text" name="iGuidePlateType" th:value="${phase_i?.iGuidePlateType}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                导板使用方式
+                            </div>
+                            <input type="text" name="iGuidePlateUsingType" th:value="${phase_i?.iGuidePlateUsingType}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                有无混合自由手
+                            </div>
+                            <select name="iGuidePlateBareHanded" lay-verify="required" id="iGuidePlateBareHanded">
+                                <option th:value="${phase_i?.iGuidePlateBareHanded}"></option>
+                                <option value="有" th:selected="${phase_i?.iGuidePlateBareHanded}">有</option>
+                                <option value="无" th:selected="${phase_i?.iGuidePlateBareHanded}">无</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                特殊点
+                            </div>
+                            <input type="text" name="iSpecial" th:value="${phase_i?.iSpecial}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                后续是否有拍CT进行前后对比
+                            </div>
+                            <input type="text" name="iGuidePlateCBCT" th:value="${phase_i?.iGuidePlateCBCT}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                伤口愈合情况
+                            </div>
+                            <input type="text" name="iHealingCondition" th:value="${phase_i?.iHealingCondition}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" >
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否拍1期CBCT
+                            </div>
+                            <select name="iCBCT" lay-verify="required" id="iCBCT">
+                                <option th:value="${phase_i?.iCBCT}"></option>
+                                <option value="是" th:selected="${phase_i?.iCBCT}">是</option>
+                                <option value="否" th:selected="${phase_i?.iCBCT}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否拍1期小牙片
+                            </div>
+                            <select name="iApicalXray" lay-verify="required" id="iApicalXray">
+                                <option th:value="${phase_i?.iApicalXray}"></option>
+                                <option value="是" th:selected="${phase_i?.iApicalXray}">是</option>
+                                <option value="否" th:selected="${phase_i?.iApicalXray}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否拍1期全景片
+                            </div>
+                            <select name="iPanoramicXray" lay-verify="required" id="iPanoramicXray">
+                                <option th:value="${phase_i?.iPanoramicXray}"></option>
+                                <option value="是" th:selected="${phase_i?.iPanoramicXray}">是</option>
+                                <option value="否" th:selected="${phase_i?.iPanoramicXray}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="layui-inline" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                是否拍1期手术视频
+                            </div>
+                            <select name="iSurgicalVideo" lay-verify="required" id="iSurgicalVideo">
+                                <option th:value="${phase_i?.iSurgicalVideo}"></option>
+                                <option value="是" th:selected="${phase_i?.iSurgicalVideo}">是</option>
+                                <option value="否" th:selected="${phase_i?.iSurgicalVideo}">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                临床照片（多张）
+                            </div>
+                            <input type="text" name="iClinicalPhoto" th:value="${phase_i?.iClinicalPhoto}" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <div class="layui-input-group">
+                            <div class="layui-input-prefix" >
+                                病历
+                            </div>
+                            <input type="text" name="iMedicalRecord" th:value="${phase_i?.iMedicalRecord}" placeholder="病历" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+    </div>
+        <div class="layui-card">
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-normal" id="ID-upload-demo-files" th:action="@{/file/upload}">选择多文件</button>
+                    <div class="layui-upload-list">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col style="min-width: 100px;">
+                                <col width="150">
+                                <col width="260">
+                                <col width="150">
+                            </colgroup>
+                            <thead>
+                            <th>文件名</th>
+                            <th>大小</th>
+                            <th>上传进度</th>
+                            <th>操作</th>
+                            </thead>
+                            <tbody id="ID-upload-demo-files-list"></tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="layui-btn" id="ID-upload-demo-files-action">开始上传</button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card">
+            <div class="layui-card-body" style="padding: 15px">
+                <table id="LAY-file-download" lay-filter="LAY-file-download"></table>
+                <script type="text/html" id="barDemo">
+                    <div class="layui-clear-space">
+                        <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    </div>
+                </script>
+            </div>
+        </div>
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+      laydate.render({
+          elem: '#birthdate-input1',
+          type: 'date',
+          trigger: 'click',  // 设置触发方式为点击文本
+          //theme: '#393d49'
+          // 如果需要，可以添加更多选项
+      });
+      laydate.render({
+          elem: '#birthdate-input2',
+          type: 'date',
+          trigger: 'click',  // 设置触发方式为点击文本
+          //theme: '#393d49'
+          // 如果需要，可以添加更多选项
+      });
+  });
+</script>
+
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      var formData = data.field;
+      $.ajax({
+        url: '/patientManagement/patientPhaseIEdit',
+        type: 'POST',
+        data: formData,
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
+

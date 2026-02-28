@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>口腔医生管理系统</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+</head>
+<body class="layui-layout-body">
+<!--顶部-->
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">口腔医生管理系统</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="/logout">退出系统</a> </li>
+        </ul>
+    </div>
+    <!--左侧菜单-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-accordion="true">
+                <li class="layui-nav-item">
+                    <a href="javascript:;" class="layui-nav-item">临床板块</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#" class="site-demo-active" lay-href="/patientManagement">患者管理</a></dd>
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="2" data-title="软硬组织库">软硬组织库</a> </dd>
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="3" data-title="智能决策">智能决策</a> </dd>
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="4" data-title="医生管理">医生管理</a> </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" class="layui-nav-item">科研板块</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="1" data-title="科研板块测试1">科研板块测试1</a> </dd>
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="2" data-title="科研板块测试2">科研板块测试2</a> </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" class="layui-nav-item">教学板块</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="1" data-title="教学板块测试1">教学板块测试1</a> </dd>
+                        <dd><a href="#" class="site-demo-active" lay-href="http://www.baidu.com/" data-id="2" data-title="教学板块测试2">教学板块测试2</a> </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--主体部分-->
+    <div class="layui-body">
+        <div class="layui-tab" lay-filter="demo" lay-allowclose="true" style="margin: 0;">
+            <ul class="layui-tab-title"></ul>
+            <div class="layui-tab-content"></div>
+        </div>
+    </div>
+    <!--底部区域-->
+    <div class="layui-footer">
+        口腔医生管理系统 -- 底部固定区域
+    </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+    layui.use(['element','layer','jquery'],function () {
+        var element = layui.element;
+        var $ = layui.$;
+        $('.site-demo-active').on('click', function() {
+            var url = $(this).attr('lay-href');
+            window.location.href = url;
+        });
+    });
+</script>
+</body>
+</html>

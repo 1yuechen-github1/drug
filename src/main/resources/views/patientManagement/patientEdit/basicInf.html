@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>基本信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/layui_exts/formSelectdist/formSelects-v4.css}" media="all">
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .layui-card {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="layui-card">
+        <div class="layui-card-body">
+             <form class="layui-form" action="" lay-filter="component-form-group">
+                <input name="id" id="id-input" class="layui-input layui-hide" th:value="${patientBasicInf?.id}"/>
+                <div class="layui-form-item" style="padding-left: 56px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            姓名
+                        </div>
+                        <input type="text" name="patientname" th:value="${patientBasicInf?.patientname}" lay-verify="required"   placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="padding-left: 28px">
+                    <div class="layui-input-group" >
+                        <div class="layui-input-prefix">
+                            身份证号
+                        </div>
+                        <input type="text" name="idcard" th:value="${patientBasicInf?.idcard}" lay-verify="required" placeholder="请输入身份证号" autocomplete="off" class="layui-input" maxlength="18">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item" style="padding-left: 56px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            性别
+                        </div>
+                        <select name="sex" lay-verify="required">
+                            <option th:value="${patientBasicInf?.sex}"></option>
+                            <option value="男" th:selected="${patientBasicInf?.sex == '男'}">男</option>
+                            <option value="女" th:selected="${patientBasicInf?.sex == '女'}">女</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            出生年月
+                        </div>
+                        <input type="text" name="birthday" th:value="${patientBasicInf?.birthday}" lay-verify="required" placeholder="请选择出生年月" autocomplete="off" class="layui-input" id="birthdate-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 42px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            病历号
+                        </div>
+                        <input type="text" name="hospitalcode" th:value="${patientBasicInf?.hospitalcode}" lay-verify="" placeholder="请输入患者病历号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 56px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            职业
+                        </div>
+                        <input type="text" name="profession" th:value="${patientBasicInf?.profession}" placeholder="请输入职业" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 56px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            住址
+                        </div>
+                        <input type="text" name="address" th:value="${patientBasicInf?.address}" placeholder="请输入住址" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 42px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            出生地
+                        </div>
+                        <input type="text" name="incunabulum" th:value="${patientBasicInf?.incunabulum}" placeholder="请输入出生地" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            负责医生
+                        </div>
+                        <input type="text" name="patientdoctor" th:value="${patientBasicInf?.patientdoctor}" placeholder="请输入负责医生" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item ">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix">
+                            特殊患者标签
+                        </div>
+                        <select name="patientlabel" lay-verify="" xm-select="select1">
+                            <option th:value="${patientBasicInf?.patientlabel}"></option>
+                            <option value="GBR"              th:selected="${patientBasicInf?.patientlabel == 'GBR'}"        >GBR</option>
+                            <option value="上颌窦外提"         th:selected="${patientBasicInf?.patientlabel == '上颌窦外提'}"        >上颌窦外提</option>
+                            <option value="上颌窦内提"         th:selected="${patientBasicInf?.patientlabel == '上颌窦内提'}"        >上颌窦内提</option>
+                            <option value="软组织增量"         th:selected="${patientBasicInf?.patientlabel == '软组织增量'}"        >软组织增量</option>
+                            <option value="拔牙创愈合不良"      th:selected="${patientBasicInf?.patientlabel == '拔牙创愈合不良'}"        >拔牙创愈合不良</option>
+                            <option value="种植体周围疾病"      th:selected="${patientBasicInf?.patientlabel == '种植体周围疾病'}"        >种植体周围疾病</option>
+                            <option value="同期种植"           th:selected="${patientBasicInf?.patientlabel == '同期种植'}"        >同期种植</option>
+                            <option value="早期种植"           th:selected="${patientBasicInf?.patientlabel == '早期种植'}"        >早期种植</option>
+                            <option value="即刻种植"           th:selected="${patientBasicInf?.patientlabel == '即刻种植'}"        >即刻种植</option>
+                            <option value="邻牙牙周病"         th:selected="${patientBasicInf?.patientlabel == '邻牙牙周病'}"        >邻牙牙周病</option>
+                            <option value="GTR"              th:selected="${patientBasicInf?.patientlabel == 'GTR'}"        >GTR</option>
+                            <option value="上颌窦超内提（距离高）"th:selected="${patientBasicInf?.patientlabel == '上颌窦超内提（距离高）'}"        >上颌窦超内提（距离高）</option>
+                            <option value="倾斜种植体"         th:selected="${patientBasicInf?.patientlabel == '倾斜种植体'}"        >倾斜种植体</option>
+                            <option value="短种植体"           th:selected="${patientBasicInf?.patientlabel == '短种植体'}"        >短种植体</option>
+                            <option value="上颌窦穿通"         th:selected="${patientBasicInf?.patientlabel == '上颌窦穿通'}"        >上颌窦穿通</option>
+                            <option value="邻牙根尖周炎"        th:selected="${patientBasicInf?.patientlabel == '邻牙根尖周炎'}"        >邻牙根尖周炎</option>
+                            <option value="颌垫"              th:selected="${patientBasicInf?.patientlabel == '颌垫'}"        >颌垫</option>
+                            <option value="修复空间不足"        th:selected="${patientBasicInf?.patientlabel == '修复空间不足'}"        >修复空间不足</option>
+                            <option value="角化龈不足"          th:selected="${patientBasicInf?.patientlabel == '角化龈不足'}"        >角化龈不足</option>
+                            <option value="软组织裂开"          th:selected="${patientBasicInf?.patientlabel == '软组织裂开'}"        >软组织裂开</option>
+                            <option value="种植机械并发症"       th:selected="${patientBasicInf?.patientlabel == '种植机械并发症'}"        >种植机械并发症</option>
+                            <option value="修复基台就位与安装"    th:selected="${patientBasicInf?.patientlabel == '修复基台就位与安装'}"        >修复基台就位与安装</option>
+                            <option value="骨再生效果不佳"       th:selected="${patientBasicInf?.patientlabel == '骨再生效果不佳'}"        >骨再生效果不佳</option>
+                            <option value="分阶段种植"          th:selected="${patientBasicInf?.patientlabel == '分阶段种植'}"        >分阶段种植</option>
+                            <option value="onlay"             th:selected="${patientBasicInf?.patientlabel == 'onlay'}"        >onlay</option>
+                        </select>
+                        <input type="text" name="patientlabelnote" th:value="${patientBasicInf?.patientlabelnote}" placeholder="请输入备注" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+<script th:src="@{/static/res/layui/layui.js}"></script>
+    <script th:src="@{/static/layui_exts/formSelectdist/formSelects-v4.min.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+        // 设置出生年月输入框的laydate
+        laydate.render({
+            elem: '#birthdate-input',
+            type: 'month',
+            format: 'yyyy-MM',
+            trigger: 'click',  // 设置触发方式为点击文本
+            //theme: '#393d49'
+            // 如果需要，可以添加更多选项
+        });
+    });
+</script>
+
+<script>
+
+    layui.use(['form'], function () {
+        var form = layui.form;
+        var $ = layui.$;
+
+        // 监听提交按钮的点击事件
+        form.on('submit(patientEditBasic)', function (data) {
+            // 阻止表单的默认提交行为
+            var event = window.event || arguments.callee.caller.arguments[0];
+            event.preventDefault();
+
+            var formData = data.field;
+            $.ajax({
+
+                url: '/patientManagement/patientEditBasic',
+                type: 'POST',
+                data: formData,
+                success: function (str) {
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>
+
+

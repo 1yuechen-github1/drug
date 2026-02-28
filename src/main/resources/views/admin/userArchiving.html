@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加用户</title>
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+</head>
+<body>
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="id" th:value="${obj?.id}" class="layui-input layui-hide"/>
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            账户名*
+                        </div>
+                        <input type="text" name="username" th:value="${obj?.username}" lay-verify="required" placeholder="请设置账户名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            账户密码*
+                        </div>
+                        <input type="text" name="password" th:value="${obj?.password}" lay-verify="required" placeholder="请设置账户密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            联系电话
+                        </div>
+                        <input type="text" name="telephone" th:value="${obj?.telephone}"  placeholder="请输入联系电话" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            邮箱
+                        </div>
+                        <input type="text" name="email" th:value="${obj?.email}"  placeholder="请输入邮箱" autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item " style="padding-left: 28px">
+                    <div class="layui-input-group">
+                        <div class="layui-input-prefix" >
+                            医生姓名
+                        </div>
+                        <input type="text" name="doctorname" th:value="${obj?.doctorname}" placeholder="请输入账号负责医生姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+<script th:src="@{/static/res/layui/layui.js}"></script>
+
+</body>
+</html>
+

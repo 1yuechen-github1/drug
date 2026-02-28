@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>基本信息</title>
+  <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+  <style>
+    .align-input {
+      display: flex;
+      align-items: center;
+    }
+    .align-input .layui-form-label {
+      flex: 0 0 180px; /* 设置标签宽度 */
+      text-align: -moz-center; /* 将标签内容对齐 */
+    }
+    .align-input .layui-input-block {
+      flex: 1; /* 让输入框占据剩余的空间 */
+      margin-left: 0px;
+    }
+  </style>
+</head>
+<body>
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form layui-form-pane" action="">
+        <input name="id" id="id-input" class="layui-input layui-hide" th:value="${plan?.id}"/>
+        <input name="medicalrecordid" id="id-input2" class="layui-input layui-hide" th:value="${plan?.medicalRecordId}"/>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">就诊记录</label>
+          <div class="layui-input-block">
+            <input type="text" name="planRecord" th:value="${plan?.planRecord}" lay-verify="required" placeholder="初诊记录" autocomplete="off" class="layui-input" >
+          </div>
+        </div>
+
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">谈方案时间</label>
+          <div class="layui-input-block">
+            <input type="text" name="planDate" th:value="${plan?.planDate}" placeholder="" autocomplete="off" class="layui-input" id="birthdate-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否谈方案</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="hospitalcode" th:value="${patientBasicInf?.hospitalcode}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">-->
+              <select name="planWhether" lay-verify="required">
+                  <option th:value="${plan?.planWhether}"></option>
+                  <option value="是" th:selected="${plan?.planWhether=='是'}">是</option>
+                  <option value="否" th:selected="${plan?.planWhether=='否'}">否</option>
+              </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否已签手术同意书</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="profession" th:value="${plan?.profession}" placeholder="" autocomplete="off" class="layui-input">-->
+              <select name="planConsent" lay-verify="required">
+                  <option th:value="${plan?.planConsent}"></option>
+                  <option value="是" th:selected="${plan?.planConsent=='是'}">是</option>
+                  <option value="否" th:selected="${plan?.planConsent=='否'}">否</option>
+              </select>
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">种植态度</label>
+          <div class="layui-input-block">
+            <input type="text" name="planAttitude" th:value="${plan?.planAttitude}" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">是否种植模拟</label>
+          <div class="layui-input-block">
+<!--            <input type="text" name="incunabulum" th:value="${plan?.incunabulum}" placeholder="是、否（“是”的话附上资料链接）" autocomplete="off" class="layui-input">-->
+              <select name="planPlantingSimulation" lay-verify="required">
+                  <option th:value="${plan?.planPlantingSimulation}"></option>
+                  <option value="是" th:selected="${plan?.planPlantingSimulation=='是'}">是</option>
+                  <option value="否" th:selected="${plan?.planPlantingSimulation=='否'}">否</option>
+              </select>
+          </div>
+        </div>
+
+        <div class="layui-form-item align-input">
+          <label class="layui-form-label">病历</label>
+          <div class="layui-input-block">
+            <input type="text" name="planMedicalRecord" th:value="${plan?.planMedicalRecord}" placeholder="病历" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="patientEditBasic">提交</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+  layui.use('laydate', function() {
+    var laydate = layui.laydate;
+
+    // 设置出生年月输入框的laydate
+    laydate.render({
+      elem: '#birthdate-input',
+      type: 'date',
+      //format: 'yyyy-MM',
+      trigger: 'click',  // 设置触发方式为点击文本
+      //theme: '#393d49'
+      // 如果需要，可以添加更多选项
+    });
+  });
+</script>
+
+<script>
+
+  layui.use(['form'], function () {
+    var form = layui.form;
+    var $ = layui.$;
+
+    // 监听提交按钮的点击事件
+    form.on('submit(patientEditBasic)', function (data) {
+      // 阻止表单的默认提交行为
+      var event = window.event || arguments.callee.caller.arguments[0];
+      event.preventDefault();
+
+      var formData = data.field;
+      $.ajax({
+        url: '/patientManagement/patientPlanEdit',
+        type: 'POST',
+        data: formData,
+        success: function (str) {
+          layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+        }
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>
+

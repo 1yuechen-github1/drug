@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>患者建档</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+    <style>
+        .align-input {
+            display: flex;
+            align-items: center;
+        }
+        .align-input .layui-form-label {
+            flex: 0 0 180px; /* 设置标签宽度 */
+            text-align: -moz-center; /* 将标签内容对齐 */
+        }
+        .align-input .layui-input-block {
+            flex: 1; /* 让输入框占据剩余的空间 */
+            margin-left: 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="id" th:value="${obj?.id}" class="layui-input layui-hide"/>
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="patientname" th:value="${obj?.patientname}" lay-verify="required" placeholder="请输入患者姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idcard" th:value="${obj?.idcard}" lay-verify="required" placeholder="请输入身份证号" autocomplete="off" class="layui-input" maxlength="18">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <select name="sex" lay-verify="required">
+                            <option value="">请选择性别</option>
+                            <option value="男" th:selected="${obj?.sex == 'male'}">男</option>
+                            <option value="女" th:selected="${obj?.sex == 'female'}">女</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">出生年月</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="birthday" th:value="${obj?.birthday}" lay-verify="required" placeholder="请选择出生年月" autocomplete="off" class="layui-input" id="birthdate-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">患者医院代码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="hospitalcode" th:value="${obj?.hospitalcode}" lay-verify="required" placeholder="请输入患者医院代码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">职业</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="profession" th:value="${obj?.profession}" placeholder="请输入职业" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">住址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" th:value="${obj?.address}" placeholder="请输入住址" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">出生地</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="incunabulum" th:value="${obj?.incunabulum}" placeholder="请输入出生地" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">负责医生</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="patientdoctor" th:value="${obj?.patientdoctor}" placeholder="请输入负责医生" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item  align-input">
+                    <label class="layui-form-label">特殊患者标签</label>
+                    <div class="layui-input-block">
+                        <select name="patientlabel" >
+                            <option value="">请选择特殊患者标签</option>
+                            <option value="1" th:selected="${obj?.patientlabel == '1'}">1</option>
+                            <option value="2" th:selected="${obj?.patientlabel == '2'}">2</option>
+                            <option value="3" th:selected="${obj?.patientlabel == '3'}">3</option>
+                            <option value="4" th:selected="${obj?.patientlabel == '4'}">4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/layui/layui.js}"></script>
+<!--<script th:src="@{/static/layui/lay/modules/laydate.js}"></script>-->
+<script>
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+
+        // 设置出生年月输入框的laydate
+        laydate.render({
+            elem: '#birthdate-input',
+            type: 'month',
+            format: 'yyyy-MM',
+            trigger: 'click',  // 设置触发方式为点击文本
+            //theme: '#393d49'
+            // 如果需要，可以添加更多选项
+        });
+    });
+</script>
+<script>
+    layui.use(['form'],function () {
+        var $ = layui.$;
+
+    });
+</script>
+
+</body>
+</html>
+

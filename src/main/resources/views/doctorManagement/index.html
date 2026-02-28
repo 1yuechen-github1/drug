@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>商品列表</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/static/res/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/adminui/dist/css/admin.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/res/style/template.css}" media="all">
+
+    <style>
+        .info {
+            font-size: 30px; /* 你想要的字体大小，可以根据需要调整 */
+        }
+    </style>
+
+</head>
+<body>
+
+
+<div class="layui-fluid layadmin-cmdlist-fluid">
+  <div class="layui-row layui-col-space30">
+    <div class="layui-col-md3 layui-col-sm4">
+        <div class="cmdlist-container">
+            <a href="https://docs.qq.com/sheet/DTUpDT1pMZGxVS3J4?tab=BB08J2" target="_blank">
+                <img th:src="@{/static/res/style/imgs/doctormanagement/1.png}">
+                <div class="cmdlist-text">
+                    <p class="info" style="font-size: 18px">①有效初诊登记</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="layui-col-md3 layui-col-sm4">
+        <div class="cmdlist-container">
+            <a href="https://docs.qq.com/sheet/DQU5MbE1DVVVFTmZt?tab=BB08J2" target="_blank">
+                <img th:src="@{/static/res/style/imgs/doctormanagement/2.png}">
+              <div class="cmdlist-text">
+                <p class="info" style="font-size: 18px">②医生排班</p>
+              </div>
+            </a>
+        </div>
+    </div>
+    <div class="layui-col-md3 layui-col-sm4">
+        <div class="cmdlist-container">
+            <a href="https://docs.qq.com/sheet/DVVRydHhOa2FuV29M?tab=BB08J2" target="_blank">
+                <img th:src="@{/static/res/style/imgs/doctormanagement/3.png}">
+              <div class="cmdlist-text">
+                <p class="info" style="font-size: 18px">③接诊登记</p>
+              </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="layui-col-md12 layui-col-sm12">
+        <div id="demo0"></div>
+    </div>
+  </div>
+</div>
+
+
+<script th:src="@{/static/res/layui/layui.js}"></script>
+
+<!--<script>
+    document.querySelectorAll('.cmdlist-container a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            var href = this.getAttribute('href');
+            if (href) {
+                window.open(href);
+            }
+        });
+    });
+</script>-->
+
+
+</body>
+</html>

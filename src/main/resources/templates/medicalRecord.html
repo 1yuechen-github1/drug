@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>患者信息管理</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+    <script type="text/html" id="indexTpl">
+        {{d.LAY_TABLE_INDEX+1}}
+    </script>
+    <style>
+
+        .layui-btn {
+            background-color: #448aca; /* 深蓝色按钮背景 */
+            color: #fff;
+            border: 1px solid #448aca;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .layui-btn:hover {
+            background-color: #e38d13; /* 橙色按钮背景 */
+            border: 1px solid #e38d13;
+        }
+
+        .icon-text {
+            margin-left: 5px;
+            vertical-align: middle;
+            font-size: 14px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+
+                    <input type="hidden" id="patientId" th:value="${obj?.patientid}" />
+
+
+                    <table class="layui-hide" id="main-table" lay-filter="main-table"></table>
+                    <script type="text/html" id="toolbarDemo">
+                        <div class="layui-inline" style="margin-right: 10px;">
+                            <span class="layui-btn layui-btn-sm" lay-event="add">
+                            <i class="layui-icon">&#xe654;</i><span class="icon-text">新增就诊记录</span>
+                            </span>
+                        </div>
+
+                    </script>
+
+                    <script type="text/html" id="barDemo">
+                        <a class="layui-btn layui-btn-xs" lay-event="merge">合并就诊记录</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+    layui.use(['table','form'],function () {
+        var $ = layui.$;
+        var table = layui.table;
+
+        var patientId = $("#patientId").val();
+
+        table.render({
+            elem: '#main-table',
+            height: 850,
+            url: '/patientManagement/queryMedicalRecordDtoByPatientId?id='+patientId,
+            method: 'POST',
+            id: 'table-load',
+            toolbar: '#toolbarDemo',
+            cols: [
+                [
+                    {title: '序号', templet: '#indexTpl', width: 60, align: 'center'},
+                    {field: 'patientname', title: '患者姓名', align: 'center', width: 350},
+                    {field: 'patientid', title: '患者id', align: 'center', width: 350},
+                    {field: 'visittime', title: '就诊时间', align: 'center', width: 350},
+                    {field: 'present', title: '就诊阶段', align: 'center', width: 350},
+                    {title: '操作', align: 'center', toolbar: '#barDemo', fixed: 'right'}
+                ]
+            ]
+        });
+
+
+        //监听头工具栏事件
+        table.on('toolbar(main-table)',function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    var patientId = $("#patientId").val();
+
+                    // Prepare the data to send to the server
+                    var dataToSend = {
+                        patientid: patientId
+                    };
+
+                    // Send the Ajax request to the server
+                    $.ajax({
+                        url: '/patientManagement/patientMedicalrecordAdd',
+                        data: dataToSend,
+                        type: 'POST', // Adjust the HTTP method as needed (GET, POST, etc.)
+                        cache: false,
+                        success: function(str) {
+                            if (str.code === 0) {
+                                table.reload('table-load');
+                            }
+                            layer.msg(str.msg, { icon: str.icon, anim: str.anim });
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error if needed
+                            console.error(error);
+                        }
+                    });
+                    break;
+
+            }
+        });
+
+
+        //监听编辑、删除,查询患者问诊记录
+        table.on('tool(main-table)',function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'edit':
+                    var medicalrecordid = data.id;
+                    var url = '/patientManagement/patientEditByMedicalrecordId?medicalrecordid=' + medicalrecordid;
+                    window.open(url);
+                    break;
+
+                case 'merge':
+                    var medicalrecordid = data.id;
+                    var url = '/patientManagement/patientRecordMergeByMedicalrecordId?medicalrecordid=' + medicalrecordid;
+                    window.open(url);
+                    break;
+
+                case 'del':
+                    layer.confirm('确认要删除吗？',function (index) {
+                        $.ajax({
+                            url: '/supplier/supplierDelById?id=' +data.id,
+                            data: null,
+                            async: false,
+                            cache: false,
+                            success: function (str) {
+                                table.reload('table-load');
+                                layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            }
+                        });
+                    })
+                    break;
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>
+
